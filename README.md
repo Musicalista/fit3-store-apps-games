@@ -17,11 +17,33 @@ Small native apps and games ("light apps", `.f3a` files) for the **Samsung Galax
 
 ## The apps
 
-Games: Snake, Flappy, Tetris, 2048, Pong, Tic-tac-toe, Memory, Sudoku, Minesweeper, Breakout, Simon.
-Tools: Clock (real time, date, battery), Alarm (3 alarms), Timer and stopwatch, Counter, Coin and number draw, Breathing guide, Reaction test, Flashlight.
-Examples: hello, paint, dice.
+| App | Category | Controls | Size | Saves | Needs |
+|---|---|---|---|---|---|
+| Snake (`snake`) | Game | swipe to turn, or tap left/right half | 1.6 KB | best score | - |
+| Flappy (`flappy`) | Game | tap to flap | 1.6 KB | best score | - |
+| Tetris (`tetris`) | Game | drag sideways, tap rotates, drag down speeds up, fast swipe down drops | 2.6 KB | best score | - |
+| 2048 (`g2048`) | Game | swipe | 1.9 KB | best score | - |
+| Pong (`pong`) | Game | drag the paddle (vs CPU, first to 7) | 1.6 KB | - | - |
+| Tic-tac-toe (`velha`) | Game | tap a square (vs CPU) | 1.8 KB | - | - |
+| Memory (`memoria`) | Game | tap the cards | 1.9 KB | fewest moves | - |
+| Sudoku (`sudoku`) | Game | tap a square, then a number | 2.3 KB | - | - |
+| Minesweeper (`campomin`) | Game | tap opens, hold flags | 2.0 KB | - | - |
+| Breakout (`breakout`) | Game | drag the paddle, tap to launch | 1.6 KB | best score | - |
+| Simon (`simon`) | Game | repeat the colour sequence | 1.4 KB | best score | - |
+| Reaction (`reflexo`) | Game | tap when the screen turns green | 1.3 KB | best time | - |
+| Clock (`relogio`) | Tool | tap changes the theme | 1.7 KB | theme | real time + battery |
+| Alarm (`alarme`) | Tool | tap the hour/minute to set, switch to enable | 1.9 KB | alarms | real time |
+| Timer (`timer`) | Tool | presets 1/5/10/25 min, stopwatch tab with laps | 1.8 KB | - | - |
+| Counter (`contador`) | Tool | tap adds, buttons subtract and reset | 0.9 KB | the count | - |
+| Draw (`sorteio`) | Tool | tap to flip a coin or draw 1..N | 1.4 KB | - | - |
+| Breathe (`respirar`) | Tool | tap to start the breathing guide | 0.8 KB | - | - |
+| Flashlight (`lanterna`) | Tool | tap changes the colour | 0.4 KB | - | - |
+| Hello (`hello`) | Example | tap to count | 0.4 KB | - | - |
+| Paint (`paint`) | Example | finger painting | 0.7 KB | - | - |
+| Dice (`dice`) | Example | tap to roll 1 to 4 dice | 0.9 KB | - | - |
+| **22 apps** | 12 games, 7 tools, 3 examples | | **32.6 KB** | | |
 
-Each app is 0.4 to 2.7 KB. The watch keeps up to 12 at a time; you choose which ones to install. Best scores are saved in `/user/*.sav` on the watch.
+The watch keeps up to **12 apps at a time**; you choose which ones to install. "Saves" files live in `/user/*.sav` on the watch. Apps marked *real time* / *battery* need the loader from firmware v1.7 or newer; on an older loader they show a "needs newer firmware" message instead of crashing.
 
 ## Step by step
 
