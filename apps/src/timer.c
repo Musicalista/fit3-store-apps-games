@@ -28,7 +28,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     if (s->ring && s->ring_n < 6 && now - s->last_ring > 700) { s->last_ring = now; s->ring_n++; A->vibrate(4); }
     clear(C_BG); A->rect(FB, 0, 0, F3_W, 34, RGB(24, 28, 48));
     A->rrect(FB, 6, 4, 100, 26, 8, s->mode == 0 ? RGB(66, 87, 216) : RGB(44, 50, 84)); A->ctext(FB, 56, 10, "Timer", 1, C_TEXT);
-    A->rrect(FB, 110, 4, 100, 26, 8, s->mode == 1 ? RGB(66, 87, 216) : RGB(44, 50, 84)); A->ctext(FB, 160, 10, TR("Cronometro", "Stopwatch"), 1, C_TEXT);
+    A->rrect(FB, 110, 4, 100, 26, 8, s->mode == 1 ? RGB(66, 87, 216) : RGB(44, 50, 84)); A->ctext(FB, 160, 10, TR("Cronômetro", "Stopwatch"), 1, C_TEXT);
     char buf[24];
     if (s->mode == 0) {
         for (int k = 0; k < 4; k++) { A->rrect(FB, 6 + k * 62, 64, 56, 38, 10, k == s->preset ? RGB(66, 87, 216) : RGB(44, 50, 84)); A->num(FB, 6 + k * 62 + (PRE[k] > 9 ? 12 : 20), 74, PRE[k], 2, C_TEXT); }

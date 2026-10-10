@@ -68,11 +68,11 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
         for (int i = 0; i < 16; i++) if (m & (0x8000 >> i)) { int cx = s->px + (i & 3), cy = s->py + (i >> 2), gyy = gy + (i >> 2);
             if (gyy >= 0) A->rect(FB, OX + cx * CELL + 3, OY + gyy * CELL + 3, CELL - 6, CELL - 6, RGB(50, 58, 96)); if (cy >= 0) cell(OX + cx * CELL, OY + cy * CELL, COL[s->pk]); }
     }
-    A->text(FB, 184, 56, TR("prox", "next"), 1, C_MUTED);
+    A->text(FB, 184, 56, TR("próx", "next"), 1, C_MUTED);
     { u16 m = SH[s->nk][0]; for (int i = 0; i < 16; i++) if (m & (0x8000 >> i)) A->rrect(FB, 188 + (i & 3) * 14, 76 + (i >> 2) * 14, 12, 12, 3, COL[s->nk]); }
     A->text(FB, 184, 150, TR("linhas", "lines"), 1, C_MUTED); A->num(FB, 184, 166, s->lines, 2, C_TEXT);
-    A->text(FB, 184, 200, TR("nivel", "level"), 1, C_MUTED); A->num(FB, 184, 216, s->level + 1, 2, C_TEXT);
-    if (s->over) over_box("Game over", s->score);
+    A->text(FB, 184, 200, TR("nível", "level"), 1, C_MUTED); A->num(FB, 184, 216, s->level + 1, 2, C_TEXT);
+    if (s->over) over_box(TR("Fim de jogo", "Game over"), s->score);
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }

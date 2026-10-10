@@ -34,7 +34,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     for (int yy = TOP; yy < PY; yy += 24) A->rect(FB, 124, yy, 8, 12, RGB(40, 90, 70));
     A->rrect(FB, s->ap / 16, AY - 6, PW, 12, 5, RGB(240, 120, 110)); A->rrect(FB, s->pp, PY - 2, PW, 12, 5, RGB(120, 240, 170));
     A->disc(FB, s->bx / 16 + 4, s->by / 16 + 4, 6, RGB(255, 255, 255));
-    if (s->state == 2) over_box(s->ps >= 7 ? TR("Voce ganhou!", "You win!") : TR("Voce perdeu", "You lose"), s->ps);
+    if (s->state == 2) over_box(s->ps >= 7 ? TR("Você ganhou!", "You win!") : TR("Você perdeu", "You lose"), s->ps);
     else if (s->state == 0) A->ctext(FB, 128, 250, TR("arraste a raquete", "drag the paddle"), 1, C_MUTED);
     return 1;
 }

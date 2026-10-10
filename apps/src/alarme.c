@@ -40,7 +40,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
         A->text(FB, 40, top + 6, "+", 2, C_MUTED); A->text(FB, 40, top + 74, "-", 1, C_MUTED); A->text(FB, 120, top + 6, "+", 2, C_MUTED); A->text(FB, 120, top + 74, "-", 1, C_MUTED);
         A->rrect(FB, 186, top + 28, 56, 32, 16, s->on[i] ? RGB(60, 190, 110) : RGB(70, 76, 110)); A->disc(FB, s->on[i] ? 226 : 202, top + 44, 12, RGB(255, 255, 255));
     }
-    A->ctext(FB, 128, 366, TR("toca so com o app aberto", "rings only while the app is open"), 1, C_MUTED);
+    A->ctext(FB, 128, 366, TR("toca só com o app aberto", "rings only while the app is open"), 1, C_MUTED);
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }

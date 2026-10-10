@@ -6,7 +6,7 @@ typedef struct { F3App base; int theme, last_sec; } St;
 static const u16 TH_BG[4] = { RGB(8, 10, 20), RGB(0, 0, 0), RGB(20, 8, 36), RGB(6, 26, 30) };
 static const u16 TH_FG[4] = { RGB(240, 244, 255), RGB(70, 255, 120), RGB(255, 180, 240), RGB(130, 235, 235) };
 static const u16 TH_AC[4] = { RGB(120, 150, 255), RGB(30, 150, 70), RGB(190, 110, 220), RGB(60, 150, 160) };
-static const char *const DOW_PT[7] = { "domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado" };
+static const char *const DOW_PT[7] = { "domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado" };
 static const char *const DOW_EN[7] = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 
 static int weekday(int y, int m, int d) {                        /* 0 = Sunday (does not depend on how the firmware numbers days) */

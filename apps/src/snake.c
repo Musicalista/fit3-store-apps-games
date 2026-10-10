@@ -45,7 +45,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     A->rect(FB, 0, OY - 2, F3_W, 2, RGB(60, 70, 110)); A->rect(FB, 0, OY + ROWS * CELL, F3_W, 2, RGB(60, 70, 110));
     for (int i = s->len - 1; i >= 0; i--) A->rrect(FB, s->bx[i] * CELL + 1, OY + s->by[i] * CELL + 1, CELL - 2, CELL - 2, 4, i == 0 ? RGB(120, 240, 140) : RGB(50, 180, 90));
     if (s->fx >= 0) A->disc(FB, s->fx * CELL + CELL / 2, OY + s->fy * CELL + CELL / 2, 6, RGB(240, 80, 80));
-    if (s->over) over_box("Game over", s->score);
+    if (s->over) over_box(TR("Fim de jogo", "Game over"), s->score);
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }

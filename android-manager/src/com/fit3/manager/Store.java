@@ -95,11 +95,11 @@ public final class Store {
     }
     public static List<String> parseIndex(byte[] data) {
         List<String> out = new ArrayList<>(); if (data == null) return out;
-        for (String l : new String(data, StandardCharsets.UTF_8).replace("\r", "").split("\n")) { l = l.trim(); if (l.length() > 0 && l.indexOf(';') > 0) out.add(l); }
+        for (String l : new String(data, StandardCharsets.ISO_8859_1).replace("\r", "").split("\n")) { l = l.trim(); if (l.length() > 0 && l.indexOf(';') > 0) out.add(l); }
         return out;
     }
     private static byte[] indexBytes(List<String> idx) {
-        StringBuilder sb = new StringBuilder(); for (String s : idx) sb.append(s).append('\n'); if (idx.isEmpty()) sb.append('\n'); return sb.toString().getBytes(StandardCharsets.UTF_8);
+        StringBuilder sb = new StringBuilder(); for (String s : idx) sb.append(s).append('\n'); if (idx.isEmpty()) sb.append('\n'); return sb.toString().getBytes(StandardCharsets.ISO_8859_1);
     }
     public static boolean isF3a(byte[] b) { return b != null && b.length >= 64 && b.length <= 60000 && b[0] == 0x46 && b[1] == 0x33 && b[2] == 0x41 && b[3] == 0x31; }
 

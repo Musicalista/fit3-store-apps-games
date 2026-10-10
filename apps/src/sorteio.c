@@ -15,7 +15,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     int fl = 0; if (s->flipping) { fl = (int)(now - s->t0); if (fl > 900) { s->flipping = 0; A->vibrate(4); } }
     clear(C_BG); A->rect(FB, 0, 0, F3_W, 34, RGB(24, 28, 48));
     A->rrect(FB, 6, 4, 100, 26, 8, s->mode == 0 ? RGB(66, 87, 216) : RGB(44, 50, 84)); A->ctext(FB, 56, 10, TR("Moeda", "Coin"), 1, C_TEXT);
-    A->rrect(FB, 110, 4, 100, 26, 8, s->mode == 1 ? RGB(66, 87, 216) : RGB(44, 50, 84)); A->ctext(FB, 160, 10, TR("Numero", "Number"), 1, C_TEXT);
+    A->rrect(FB, 110, 4, 100, 26, 8, s->mode == 1 ? RGB(66, 87, 216) : RGB(44, 50, 84)); A->ctext(FB, 160, 10, TR("Número", "Number"), 1, C_TEXT);
     if (s->mode == 0) {
         int w = s->flipping ? 140 * COS16[(fl / 56) % 17] / 16 : 140; if (w < 6) w = 6;
         A->rrect(FB, 128 - w / 2, 120, w, 140, w / 2, RGB(240, 200, 70)); if (w > 40) { A->rrect(FB, 128 - w / 2 + 8, 128, w - 16, 124, (w - 16) / 2, RGB(220, 170, 40)); A->ctext(FB, 128, 175, s->flipping ? "" : (s->heads ? TR("CARA", "HEADS") : TR("COROA", "TAILS")), 2, RGB(120, 80, 10)); }

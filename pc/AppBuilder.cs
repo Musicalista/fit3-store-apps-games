@@ -41,7 +41,7 @@ namespace Fit3Manager
             }
         }
         static string Tool(string bin, string n) { return Path.Combine(bin, "arm-none-eabi-" + n + ".exe"); }
-        static byte[] Name(string s) { byte[] b = new byte[16]; byte[] a = Encoding.ASCII.GetBytes((s ?? "").Replace(';', ' ')); for (int i = 0; i < 15 && i < a.Length; i++) b[i] = a[i] < 32 || a[i] > 126 ? (byte)'?' : a[i]; return b; }
+        static byte[] Name(string s) { byte[] b = new byte[16]; byte[] a = Encoding.GetEncoding(28591).GetBytes((s ?? "").Replace(';', ' ')); for (int i = 0; i < 15 && i < a.Length; i++) b[i] = a[i] < 32 ? (byte)'?' : a[i]; return b; }
         static void U32(Stream s, uint v) { s.WriteByte((byte)v); s.WriteByte((byte)(v >> 8)); s.WriteByte((byte)(v >> 16)); s.WriteByte((byte)(v >> 24)); }
 
         /// <param name="sdk">folder with f3app.h, f3game.h and app.ld</param>
@@ -53,7 +53,7 @@ namespace Fit3Manager
                 if (!ValidId(id)) { r.Log = "O identificador deve ter de 1 a 11 caracteres: letras minúsculas, números, _ ou -."; return r; }
                 if (!File.Exists(Path.Combine(sdk, "f3app.h")) || !File.Exists(Path.Combine(sdk, "app.ld"))) { r.Log = "Não achei a pasta sdk (f3app.h, app.ld) ao lado do programa: " + sdk; return r; }
                 Directory.CreateDirectory(tmp); string obj = Path.Combine(tmp, "app.o"), elf = Path.Combine(tmp, "app.elf"), bn = Path.Combine(tmp, "app.bin"); int code;
-                string o = Run(Tool(bin, "gcc"), "-mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Os -ffreestanding -fno-builtin -fno-tree-loop-distribute-patterns -fno-stack-protector -mword-relocations -fno-pic -fno-exceptions -ffunction-sections -fdata-sections -I " + Q(sdk) + " -c " + Q(src) + " -o " + Q(obj), out code);
+                string o = Run(Tool(bin, "gcc"), "-mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Os -ffreestanding -fno-builtin -fno-tree-loop-distribute-patterns -fno-stack-protector -finput-charset=UTF-8 -fexec-charset=ISO-8859-1 -mword-relocations -fno-pic -fno-exceptions -ffunction-sections -fdata-sections -I " + Q(sdk) + " -c " + Q(src) + " -o " + Q(obj), out code);
                 log.Append(o); if (code != 0) { r.Log = "Erro de compilação:\r\n" + log; return r; }
                 o = Run(Tool(bin, "ld"), "-q --gc-sections -T " + Q(Path.Combine(sdk, "app.ld")) + " -o " + Q(elf) + " " + Q(obj), out code); log.Append(o); if (code != 0) { r.Log = "Erro de ligação:\r\n" + log; return r; }
                 string und = Run(Tool(bin, "nm"), "-u " + Q(elf), out code).Trim();

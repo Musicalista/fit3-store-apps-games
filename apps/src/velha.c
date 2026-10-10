@@ -36,7 +36,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
         else { int c = (x - OX) / CS, r = (y - OY) / CS; if (x >= OX && y >= OY && c < 3 && r < 3 && !s->b[r * 3 + c]) { s->b[r * 3 + c] = 1; A->vibrate(1); finish(s); if (!s->result) cpu(s); } }
     }
     clear(C_BG); A->rect(FB, 0, 0, F3_W, 34, RGB(24, 28, 48)); A->text(FB, 8, 9, TR("Velha", "Tic-tac-toe"), 2, C_TEXT);
-    A->text(FB, 20, 56, TR("voce", "you"), 1, RGB(120, 200, 255)); A->num(FB, 60, 50, s->w, 2, C_TEXT); A->text(FB, 100, 56, TR("empate", "draw"), 1, C_MUTED); A->num(FB, 148, 50, s->d, 2, C_TEXT); A->text(FB, 180, 56, "cpu", 1, RGB(255, 140, 130)); A->num(FB, 212, 50, s->l, 2, C_TEXT);
+    A->text(FB, 20, 56, TR("você", "you"), 1, RGB(120, 200, 255)); A->num(FB, 60, 50, s->w, 2, C_TEXT); A->text(FB, 100, 56, TR("empate", "draw"), 1, C_MUTED); A->num(FB, 148, 50, s->d, 2, C_TEXT); A->text(FB, 180, 56, "cpu", 1, RGB(255, 140, 130)); A->num(FB, 212, 50, s->l, 2, C_TEXT);
     for (int i = 1; i < 3; i++) { A->rect(FB, OX + i * CS - 2, OY, 4, 3 * CS, RGB(70, 80, 130)); A->rect(FB, OX, OY + i * CS - 2, 3 * CS, 4, RGB(70, 80, 130)); }
     for (int i = 0; i < 9; i++) {
         int cx = OX + (i % 3) * CS + CS / 2, cy = OY + (i / 3) * CS + CS / 2;
@@ -45,7 +45,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     }
     if (s->result == 1 || s->result == 2) { int a = LN[s->win_line][0], b = LN[s->win_line][2]; int x1 = OX + (a % 3) * CS + CS / 2, y1 = OY + (a / 3) * CS + CS / 2, x2 = OX + (b % 3) * CS + CS / 2, y2 = OY + (b / 3) * CS + CS / 2;
         for (int k = 0; k <= 16; k++) A->disc(FB, x1 + (x2 - x1) * k / 16, y1 + (y2 - y1) * k / 16, 4, RGB(255, 230, 110)); }
-    if (s->result) A->ctext(FB, 128, 350, s->result == 1 ? TR("Voce ganhou!", "You win!") : s->result == 2 ? TR("CPU ganhou", "CPU wins") : TR("Deu velha", "Draw"), 2, RGB(255, 230, 110));
+    if (s->result) A->ctext(FB, 128, 350, s->result == 1 ? TR("Você ganhou!", "You win!") : s->result == 2 ? TR("CPU ganhou", "CPU wins") : TR("Deu velha", "Draw"), 2, RGB(255, 230, 110));
     if (s->result) A->ctext(FB, 128, 376, TR("toque p/ jogar", "tap to play"), 1, C_MUTED);
     return 1;
 }

@@ -11,7 +11,7 @@ GAMES = [
     ("g2048", "2048", "2048", "F8DDB8", "B0661C"),
     ("pong", "Pong", "Pong", "C8EAD8", "1F7A52"),
     ("velha", "Jogo da velha", "Tic-tac-toe", "F8C8D2", "B03856"),
-    ("memoria", "Memoria", "Memory", "FBE6A8", "9A7410"),
+    ("memoria", "Memória", "Memory", "FBE6A8", "9A7410"),
     ("sudoku", "Sudoku", "Sudoku", "C9D6F8", "34509E"),
     ("campomin", "Campo minado", "Minesweeper", "D8DCE6", "4A5368"),
     ("breakout", "Breakout", "Breakout", "F8CFC4", "B04A2E"),
@@ -22,7 +22,10 @@ GAMES = [
     ("reflexo", "Reflexo", "Reaction", "C6EFCB", "2A8A3E"),
     ("simon", "Simon", "Simon", "F2C8EE", "9A3A8E"),
     ("lanterna", "Lanterna", "Flashlight", "F6F2C4", "8A8420"),
-    ("relogio", "Relogio", "Clock", "CFE0FB", "2A55A8"),
+    ("hello", "Olá", "Hello", "F8D8B0", "A85A20"),
+    ("paint", "Desenho", "Paint", "D0F0E0", "208050"),
+    ("dice", "Dados", "Dice", "C8F0D8", "107048"),
+    ("relogio", "Relógio", "Clock", "CFE0FB", "2A55A8"),
     ("alarme", "Alarme", "Alarm", "FBD0D0", "A83030"),
 ]
 
@@ -32,5 +35,5 @@ if __name__ == "__main__":
         if want and gid not in want: continue
         out = os.path.join(HERE, "dist", gid + ".f3a")
         n = appcc.build(os.path.join(HERE, "src", gid + ".c"), gid, pt, en, out)
-        open(os.path.join(HERE, "dist", gid + ".meta"), "w", encoding="ascii").write("%s;%s;%s;%s;%s\n" % (gid, bg, fg, pt, en))
+        open(os.path.join(HERE, "dist", gid + ".meta"), "w", encoding="utf-8").write("%s;%s;%s;%s;%s\n" % (gid, bg, fg, pt, en))
         print("%-8s image %5d B, bss %5d B, relocs %3d, file %5d B" % (gid, n[0], n[1], n[2], n[3]))

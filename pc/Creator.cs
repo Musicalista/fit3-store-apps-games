@@ -81,7 +81,7 @@ namespace Fit3Manager
             new Thread(delegate()
             {
                 AppBuilder.Result r = AppBuilder.Build(bin, sdk, src, id, pt, en, outFile);
-                if (r.Ok) File.WriteAllText(Path.Combine(outDir, id + ".meta"), id + ";" + bg + ";" + fg + ";" + pt.Replace(';', ' ') + ";" + en.Replace(';', ' ') + "\n", Encoding.ASCII);
+                if (r.Ok) File.WriteAllText(Path.Combine(outDir, id + ".meta"), id + ";" + bg + ";" + fg + ";" + pt.Replace(';', ' ') + ";" + en.Replace(';', ' ') + "\n", new UTF8Encoding(false));
                 Post(delegate
                 {
                     cOut.Text = r.Log + (r.Ok ? Environment.NewLine + "Salvo em " + outFile : ""); Log("Criar app " + id + ": " + (r.Ok ? "OK, " + r.FileSize + " bytes" : "falhou"));

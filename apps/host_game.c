@@ -1,16 +1,12 @@
 /* PC harness for the Fit3 game apps: runs a game's f3app_main/tick against a software F3Api (clipping + out-of-range detection, 8x12 font), drives it with a tiny
  * input script and writes PPM screenshots.   host_game <prefix> "<script>" [monkey-seed]
  * script tokens: tN idle ticks | pX,Y press+release (tap) | hX,Y:N hold N ticks | sX1,Y1>X2,Y2 swipe | shot | lang0/lang1 | cH:M:S set the RTC | bN battery percent | expN expect vibrate count >= N so far
+ * Compile the app with -finput-charset=UTF-8 -fexec-charset=ISO-8859-1 (like appcc.py) so accented strings are Latin-1 bytes, as on the watch.
  * (a "monkey" seed instead runs 6000 random taps/swipes/holds and only checks that nothing crashes or draws outside the canvas) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#if defined(__has_include)
-#if __has_include("kbd_font.h")
-#include "kbd_font.h"          /* optional 8x12 bitmap font (kbd_font[][12], rows MSB first); without it text is drawn as boxes */
-#define HAVE_FONT 1
-#endif
-#endif
+#include "kbd_font.h"
 #include "f3app.h"
 static u16 fb[F3_W * F3_H]; static unsigned now = 1000; static int vib, oob, calls; static char hsdir[256];
 static void *h_malloc(u32 n) { return calloc(1, n + 16); }
@@ -27,12 +23,9 @@ static void h_disc(u16 *f, int cx, int cy, int r, u16 c) { calls++; for (int j =
 static void h_text(u16 *f, int x, int y, const char *s, int sc, u16 c) {
     calls++; if (sc < 1 || sc > 12) oob++;
     for (; *s; s++, x += 8 * sc) {
-#ifdef HAVE_FONT
         int cp = (unsigned char)*s; const uint8_t *g = (cp >= 32 && cp <= 126) ? kbd_font[cp - 32] : kbd_font['?' - 32];
+        if (cp > 126) for (int e = 0; e < (int)(sizeof kbd_font_extra_cp / 2); e++) if (kbd_font_extra_cp[e] == cp) g = kbd_font[KBD_FONT_N_ASCII + e];
         for (int r = 0; r < 12; r++) for (int b = 0; b < 8; b++) if (g[r] & (0x80 >> b)) for (int j = 0; j < sc; j++) for (int i = 0; i < sc; i++) put(f, x + b * sc + i, y + r * sc + j, c);
-#else
-        if (*s != ' ') for (int r = 2; r < 10; r++) for (int b = 1; b < 7; b++) if (r == 2 || r == 9 || b == 1 || b == 6) for (int j = 0; j < sc; j++) for (int i = 0; i < sc; i++) put(f, x + b * sc + i, y + r * sc + j, c);
-#endif
     }
 }
 static void h_ctext(u16 *f, int cx, int y, const char *s, int sc, u16 c) { h_text(f, cx - (int)strlen(s) * 4 * sc, y, s, sc, c); }

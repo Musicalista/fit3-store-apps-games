@@ -36,8 +36,8 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     for (int r = 0; r < BR; r++) for (int c = 0; c < BC; c++) if (s->br[r][c]) A->rrect(FB, c * BW + 2, OY + r * (BH + 2), BW - 3, BH, 3, RC[r]);
     A->rrect(FB, s->pp, PY, PW, 10, 4, RGB(220, 230, 255)); A->disc(FB, s->bx / 16, s->by / 16, 5, RGB(255, 255, 255));
     for (int i = 0; i < s->lives; i++) A->disc(FB, 12 + i * 16, 392, 5, RGB(240, 90, 100));
-    if (s->state == 0) A->ctext(FB, 128, 300, TR("toque para lancar", "tap to launch"), 1, C_TEXT);
-    if (s->state == 2) over_box("Game over", s->score);
+    if (s->state == 0) A->ctext(FB, 128, 300, TR("toque para lançar", "tap to launch"), 1, C_TEXT);
+    if (s->state == 2) over_box(TR("Fim de jogo", "Game over"), s->score);
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }

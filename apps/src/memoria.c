@@ -41,7 +41,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
             if (x >= OX && y >= OY && c < 4 && r < 4) { int i = r * 4 + c; if (s->st[i] == 0) { s->st[i] = 1; if (s->a < 0) s->a = i; else { s->b = i; s->moves++; s->flip_t = (int)now; } } }
         }
     }
-    clear(C_BG); A->rect(FB, 0, 0, F3_W, 34, RGB(24, 28, 48)); A->text(FB, 8, 9, TR("Memoria", "Memory"), 2, C_TEXT);
+    clear(C_BG); A->rect(FB, 0, 0, F3_W, 34, RGB(24, 28, 48)); A->text(FB, 8, 9, TR("Memória", "Memory"), 2, C_TEXT);
     A->num(FB, 150, 2, s->moves, 2, RGB(255, 220, 120)); A->text(FB, 150, 22, TR("jogadas", "moves"), 1, C_MUTED);
     for (int i = 0; i < 16; i++) {
         int cx = OX + (i & 3) * (CW + GP), cy = OY + (i >> 2) * (CH + GP);
@@ -49,7 +49,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
         else { A->rrect(FB, cx, cy, CW, CH, 8, s->st[i] == 2 ? CC[s->card[i]] : RGB(60, 66, 100)); if (s->st[i] == 1) A->rrect(FB, cx + 2, cy + 2, CW - 4, CH - 4, 6, CC[s->card[i]]); symbol(s->card[i], cx + CW / 2, cy + CH / 2, CC[s->card[i]]); }
     }
     if (s->best) { A->text(FB, 30, 380, TR("melhor", "best"), 1, C_MUTED); A->num(FB, 86, 380, s->best, 1, C_MUTED); }
-    if (s->found == 8) { A->rrect(FB, 28, 160, 200, 80, 14, RGB(30, 34, 60)); A->ctext(FB, 128, 172, TR("Parabens!", "Well done!"), 2, RGB(255, 230, 110)); A->ctext(FB, 128, 204, TR("toque p/ jogar", "tap to play"), 1, C_TEXT); }
+    if (s->found == 8) { A->rrect(FB, 28, 160, 200, 80, 14, RGB(30, 34, 60)); A->ctext(FB, 128, 172, TR("Parabéns!", "Well done!"), 2, RGB(255, 230, 110)); A->ctext(FB, 128, 204, TR("toque p/ jogar", "tap to play"), 1, C_TEXT); }
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }

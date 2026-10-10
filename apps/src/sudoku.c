@@ -52,7 +52,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     }
     for (int k = 0; k <= 9; k++) { int th = k % 3 ? 1 : 3; A->rect(FB, OX + k * CS - th / 2, OY, th, 9 * CS, RGB(120, 130, 190)); A->rect(FB, OX, OY + k * CS - th / 2, 9 * CS, th, RGB(120, 130, 190)); }
     for (int k = 0; k < 10; k++) { int px, py, pw, ph; pad_rect(k, &px, &py, &pw, &ph); A->rrect(FB, px, py, pw, ph, 8, k == 9 ? RGB(110, 60, 70) : RGB(50, 58, 104)); if (k < 9) A->num(FB, px + 19, py + 7, k + 1, 2, C_TEXT); else A->ctext(FB, px + pw / 2, py + 12, TR("apagar", "clear"), 1, C_TEXT); }
-    if (s->conflicts) A->ctext(FB, 128, 392, TR("ha numeros repetidos", "repeated numbers"), 1, RGB(255, 110, 110));
+    if (s->conflicts) A->ctext(FB, 128, 392, TR("há números repetidos", "repeated numbers"), 1, RGB(255, 110, 110));
     if (s->done) { A->rrect(FB, 28, 130, 200, 80, 14, RGB(30, 34, 60)); A->ctext(FB, 128, 142, TR("Resolvido!", "Solved!"), 2, RGB(255, 230, 110)); A->ctext(FB, 128, 176, TR("toque p/ novo", "tap for new"), 1, C_TEXT); }
     return 1;
 }

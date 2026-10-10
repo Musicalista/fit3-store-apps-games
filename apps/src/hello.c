@@ -3,7 +3,7 @@
 
 static const F3Api *A;
 typedef struct { F3App base; int count; int hue; } St;
-static const char *const MSG[2] = { "Hello from the store!", "Ola da loja de apps!" };
+static const char *const MSG[2] = { "Hello from the store!", "Olá da loja de apps!" };
 
 static int tick(F3App *self, int pressed, int x, int y, int tap) {
     St *s = (St *)self; (void)y;

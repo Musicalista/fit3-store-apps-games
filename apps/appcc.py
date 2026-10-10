@@ -21,7 +21,7 @@ def run(*a):
 def build(src, app_id, name_pt, name_en, out):
     tmp = tempfile.mkdtemp(prefix="f3a_"); obj = os.path.join(tmp, "app.o"); elf = os.path.join(tmp, "app.elf"); binf = os.path.join(tmp, "app.bin")
     run(tool("gcc"), "-mcpu=cortex-m4", "-mfpu=fpv4-sp-d16", "-mfloat-abi=hard", "-mthumb", "-Os", "-ffreestanding", "-fno-builtin", "-fno-tree-loop-distribute-patterns", "-fno-stack-protector",
-        "-mword-relocations", "-fno-pic", "-fno-exceptions", "-ffunction-sections", "-fdata-sections", "-I", HERE, "-c", src, "-o", obj)
+        "-finput-charset=UTF-8", "-fexec-charset=ISO-8859-1", "-mword-relocations", "-fno-pic", "-fno-exceptions", "-ffunction-sections", "-fdata-sections", "-I", HERE, "-c", src, "-o", obj)
     run(tool("ld"), "-q", "--gc-sections", "-T", os.path.join(HERE, "app.ld"), "-o", elf, obj)
     und = run(tool("nm"), "-u", elf).strip()
     if und: sys.exit("undefined symbols (no libc on the watch: avoid memset/memcpy/division helpers; use F3Api): " + " ".join(und.split()))
@@ -48,7 +48,7 @@ def build(src, app_id, name_pt, name_en, out):
     for r in relocs:
         if r % 4 or r + 4 > len(img): sys.exit("misaligned or out-of-range relocation at 0x%x" % r)
     if len(img) > 40000: sys.exit("app too big (%d bytes, max 40000)" % len(img))
-    name = lambda s: s.encode("ascii", "replace")[:15].ljust(16, b"\0")
+    name = lambda s: s.encode("latin-1", "replace")[:15].ljust(16, b"\0")
     hdr = struct.pack("<4sHHIIIIII", b"F3A1", 1, 0, len(img), bss_end - img_end, entry, zlib.crc32(img) & 0xffffffff, len(relocs), 0) + name(name_pt) + name(name_en)
     assert len(hdr) == 64
     data = hdr + img + b"".join(struct.pack("<I", r) for r in sorted(relocs))

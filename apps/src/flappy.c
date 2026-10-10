@@ -39,7 +39,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     A->disc(FB, BX, s->y16 / 16, BR, RGB(255, 210, 50)); A->disc(FB, BX + 5, s->y16 / 16 - 3, 3, RGB(255, 255, 255)); A->disc(FB, BX + 6, s->y16 / 16 - 3, 1, RGB(0, 0, 0)); A->rect(FB, BX + 8, s->y16 / 16 + 2, 8, 4, RGB(240, 120, 40));
     title("Flappy", s->score, s->best);
     if (s->state == 0) A->ctext(FB, 128, 280, TR("toque para voar", "tap to flap"), 2, RGB(255, 255, 255));
-    if (s->state == 2) over_box("Game over", s->score);
+    if (s->state == 2) over_box(TR("Fim de jogo", "Game over"), s->score);
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }

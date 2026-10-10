@@ -14,7 +14,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     }
     u16 bg = s->state == 1 ? RGB(150, 40, 40) : s->state == 2 ? RGB(40, 170, 80) : s->state == 4 ? RGB(110, 70, 20) : RGB(24, 32, 64);
     clear(bg); A->rect(FB, 0, 0, F3_W, 34, RGB(24, 28, 48)); A->text(FB, 8, 9, TR("Reflexo", "Reaction"), 2, C_TEXT);
-    if (s->state == 0) { A->ctext(FB, 128, 170, TR("Toque para", "Tap to"), 2, C_TEXT); A->ctext(FB, 128, 200, TR("comecar", "start"), 2, C_TEXT); }
+    if (s->state == 0) { A->ctext(FB, 128, 170, TR("Toque para", "Tap to"), 2, C_TEXT); A->ctext(FB, 128, 200, TR("começar", "start"), 2, C_TEXT); }
     else if (s->state == 1) A->ctext(FB, 128, 185, TR("espere o verde...", "wait for green..."), 2, RGB(255, 220, 220));
     else if (s->state == 2) A->ctext(FB, 128, 185, TR("TOQUE!", "TAP!"), 4, RGB(255, 255, 255));
     else if (s->state == 3) { A->num(FB, 128 - 3 * 8 * 5, 150, s->ms, 5, RGB(255, 255, 255)); A->ctext(FB, 128, 220, "ms", 2, RGB(200, 220, 255)); A->ctext(FB, 128, 270, TR("toque para repetir", "tap to retry"), 1, C_MUTED); }

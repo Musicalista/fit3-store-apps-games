@@ -15,6 +15,25 @@ Before you flash anything:
 
 The light apps are also made for this watch's 256x402 screen and firmware; on other models they may not work or may cause restarts. Everything has been tested on a PC only, not on a real watch (except where a section says otherwise).
 
+## What this project does
+
+Fit3 store turns the Galaxy Fit3 into a small app-store device: you pick light apps and games on your phone or PC and they are installed on the watch in seconds, with no reflashing.
+
+**Functions**
+- **Install, update and remove** apps and games over Bluetooth, one by one or several at once (the watch keeps up to 12).
+- **Browse** the 22 apps with their icons, sizes and install state, and **add your own** `.f3a` files.
+- **Create apps** (Windows): edit C, compile with one click and install, starting from templates or any of the 22 apps.
+- **Flash a firmware package**, with a full integrity check, four explicit confirmations and the way back to the stock firmware.
+- **Send files**: Game Boy ROMs and saves, backup and restore of a save (these need a firmware that has the emulator or the game).
+- **Watch tools** (Windows): firmware version, battery, test notification, vibration, brightness, language, reboot.
+- **Bilingual:** every app speaks Portuguese (with accents) or English according to the watch language; the Android apps follow the phone language; the Windows Manager interface is in Portuguese.
+
+**Games (12):** Snake, Flappy, Tetris, 2048, Pong, Tic-tac-toe, Memory, Sudoku, Minesweeper, Breakout, Simon, Reaction test.
+
+**Tools (7):** Clock (real time, date and battery), Alarm (3 alarms), Timer and stopwatch, Counter, Coin and number draw, Breathing guide, Flashlight.
+
+**Examples (3):** hello, paint, dice. The full table with controls and sizes is in [The apps](#the-apps).
+
 ## What is in here
 
 | Folder | What |
@@ -90,12 +109,13 @@ To go back to the original firmware, flash the stock package the same way.
 1. Install the **Arm GNU Toolchain** (`arm-none-eabi-gcc`, default install folder, or set `ARM_GNU_BIN`) and Python 3.
 2. Copy `apps/src/hello.c` (or a game) to a new file and edit it. Read `apps/f3app.h` for the API and `docs/APP_FORMAT.md` for the file format. No libc: no `printf`, `memcpy` or `malloc`; use the helpers in `apps/f3game.h`.
 3. Compile: `python apps/appcc.py apps/src/myapp.c --id myapp --pt "Meu app" --en "My app" -o apps/dist/myapp.f3a`. The compiler tells you if the app uses something the watch does not have.
-4. Test on the PC (below), then rebuild the APK or add the file from the phone (step A.8).
+4. Texts: write both languages with `TR("português", "english")` (it picks by the watch language). Source files are UTF-8 and the compiler turns the strings into Latin-1 bytes, which is what the watch's font draws, so accents (é ã ç ô...) work. Name the app in both languages in `build_games.py` (or in the Create app tab).
+5. Test on the PC (below), then rebuild the APK or add the file from the phone (step A.8).
 
 ### C. Test on a PC (no watch needed)
 
 1. Install a host `gcc` (MinGW-w64 on Windows).
-2. Run an app in the simulator: `gcc -O1 -I apps -o host_game apps/host_game.c apps/src/snake.c` then `./host_game shot "t5 s128,300>128,100 t20 shot"`. Script tokens: `tN` idle ticks, `pX,Y` tap, `hX,Y:N` hold, `sX1,Y1>X2,Y2` swipe, `cH:M:S` set the clock, `bN` battery, `shot` screenshot, `lang0`/`lang1`.
+2. Run an app in the simulator: `gcc -O1 -finput-charset=UTF-8 -fexec-charset=ISO-8859-1 -I apps -o host_game apps/host_game.c apps/src/snake.c` then `./host_game shot "t5 s128,300>128,100 t20 shot"`. Script tokens: `tN` idle ticks, `pX,Y` tap, `hX,Y:N` hold, `sX1,Y1>X2,Y2` swipe, `cH:M:S` set the clock, `bN` battery, `shot` screenshot, `lang0`/`lang1`.
 3. Random input: `./host_game x "" 1` (seed 1) checks nothing crashes or draws with bad arguments.
 4. Game logic: `gcc -O1 -I apps -DT_SUDOKU -o logic apps/host_logic_test.c && ./logic` (also `-DT_2048`, `-DT_VELHA`, `-DT_TETRIS`, `-DT_MINES`).
 5. Turn screenshots into PNG: `python apps/ppm2png.py shot_0.ppm`.

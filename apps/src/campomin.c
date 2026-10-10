@@ -46,9 +46,9 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
             if (s->st[i] == 2) { A->rect(FB, cx + 12, cy + 6, 3, 16, RGB(230, 230, 230)); A->rect(FB, cx + 14, cy + 6, 9, 7, RGB(240, 70, 70)); }
         }
     }
-    A->ctext(FB, 128, 386, TR("segure para por bandeira", "hold to flag"), 1, C_MUTED);
+    A->ctext(FB, 128, 386, TR("segure para pôr bandeira", "hold to flag"), 1, C_MUTED);
     if (s->over) over_box(TR("Boom!", "Boom!"), s->opened);
-    if (s->won) { A->rrect(FB, 28, 150, 200, 90, 14, RGB(30, 34, 60)); A->ctext(FB, 128, 164, TR("Voce venceu!", "You win!"), 2, RGB(255, 230, 110)); A->ctext(FB, 128, 204, TR("toque p/ jogar", "tap to play"), 1, C_TEXT); }
+    if (s->won) { A->rrect(FB, 28, 150, 200, 90, 14, RGB(30, 34, 60)); A->ctext(FB, 128, 164, TR("Você venceu!", "You win!"), 2, RGB(255, 230, 110)); A->ctext(FB, 128, 204, TR("toque p/ jogar", "tap to play"), 1, C_TEXT); }
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }

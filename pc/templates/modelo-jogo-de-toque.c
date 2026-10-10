@@ -17,7 +17,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     }
     clear(C_BG); title(TR("Alvo", "Target"), s->state == 1 ? s->hits : -1, 0);
     if (s->state == 1) A->disc(FB, s->tx, s->ty, 24, RGB(240, 90, 90));
-    if (s->state == 0) A->ctext(FB, 128, 190, TR("toque para comecar", "tap to start"), 2, C_TEXT);
+    if (s->state == 0) A->ctext(FB, 128, 190, TR("toque para começar", "tap to start"), 2, C_TEXT);
     if (s->state == 2) { A->ctext(FB, 128, 150, TR("Tempo (ms)", "Time (ms)"), 2, C_TEXT); A->num(FB, 128 - 4 * 8 * 4, 190, s->hits, 4, RGB(255, 220, 120)); A->ctext(FB, 128, 260, TR("toque para repetir", "tap to retry"), 1, C_MUTED); }
     if (s->best) { A->text(FB, 40, 380, TR("recorde", "best"), 1, C_MUTED); A->num(FB, 110, 376, s->best, 2, C_TEXT); }
     return 1;

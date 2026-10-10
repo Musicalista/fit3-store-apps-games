@@ -25,10 +25,10 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     if (s->state == 2 && s->lit >= 0 && (int)(now - (u32)s->lit_t) > 250) s->lit = -1;
     clear(C_BG); title("Simon", s->score, s->best);
     for (int q = 0; q < 4; q++) A->rrect(FB, 6 + (q & 1) * 124, 62 + (q >> 1) * 160, 120, 154, 18, q == s->lit ? BRT[q] : DIM[q]);
-    if (s->state == 0) A->ctext(FB, 128, 215, TR("toque p/ comecar", "tap to start"), 2, RGB(255, 255, 255));
+    if (s->state == 0) A->ctext(FB, 128, 215, TR("toque p/ começar", "tap to start"), 2, RGB(255, 255, 255));
     if (s->state == 1) A->ctext(FB, 128, 386, TR("observe...", "watch..."), 1, C_MUTED);
     if (s->state == 2) A->ctext(FB, 128, 386, TR("sua vez", "your turn"), 1, C_TEXT);
-    if (s->state == 3) over_box("Game over", s->score);
+    if (s->state == 3) over_box(TR("Fim de jogo", "Game over"), s->score);
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }

@@ -97,6 +97,8 @@ namespace Fit3Manager
                 w.InstallLight("hello", app, "hello;F8D8B0;A85A20;Ola;Hello", null);
                 Check("light app installed: index written last", st.UserPath == "/user/apps/index.txt" && st.UserFile != null);
                 List<string> idx = Watch.ParseIndex(st.UserFile); Check("index has the new line", idx.Count == 1 && idx[0] == "hello;F8D8B0;A85A20;Ola;Hello");
+                w.InstallLight("relogio", app, "relogio;CFE0FB;2A55A8;Relógio;Clock", null); idx = Watch.ParseIndex(st.UserFile);
+                Check("accented app name is stored as one Latin-1 byte (0xF3) and read back", Array.IndexOf(st.UserFile, (byte)0xF3) >= 0 && Array.IndexOf(st.UserFile, (byte)0xC3) < 0 && idx.Count == 2 && idx[1].Contains("Relógio"));
                 bool bad = false; try { w.InstallLight("../x", app, "x;000000;000000;a;b", null); } catch (IOException) { bad = true; } Check("odd ids are refused", bad);
                 bad = false; try { w.InstallLight("okid", new byte[100], "okid;000000;000000;a;b", null); } catch (IOException) { bad = true; } Check("a file that is not .f3a is refused", bad);
             }

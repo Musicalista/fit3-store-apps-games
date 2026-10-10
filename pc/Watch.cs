@@ -202,11 +202,11 @@ namespace Fit3Manager
         public static List<string> ParseIndex(byte[] data)
         {
             List<string> lines = new List<string>(); if (data == null) return lines;
-            foreach (string l in Encoding.UTF8.GetString(data).Replace("\r", "").Split('\n')) if (l.Trim().Length > 0 && l.IndexOf(';') > 0) lines.Add(l.Trim());
+            foreach (string l in Encoding.GetEncoding(28591).GetString(data).Replace("\r", "").Split('\n')) if (l.Trim().Length > 0 && l.IndexOf(';') > 0) lines.Add(l.Trim());
             return lines;
         }
         public List<string> ReadIndex() { return ParseIndex(ReadFile(AppsIndex, null)); }
-        static byte[] IndexBytes(List<string> idx) { return Encoding.UTF8.GetBytes(idx.Count == 0 ? "\n" : string.Join("\n", idx.ToArray()) + "\n"); }
+        static byte[] IndexBytes(List<string> idx) { return Encoding.GetEncoding(28591).GetBytes(idx.Count == 0 ? "\n" : string.Join("\n", idx.ToArray()) + "\n"); }
         public void InstallLight(string id, byte[] f3a, string indexLine, Action<long, long, long> progress)
         {
             if (!PlainId(id)) throw new IOException("Identificador de app inválido.");

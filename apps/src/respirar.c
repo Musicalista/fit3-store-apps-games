@@ -16,7 +16,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     }
     clear(RGB(10, 24, 36)); A->rect(FB, 0, 0, F3_W, 34, RGB(24, 28, 48)); A->text(FB, 8, 9, TR("Respirar", "Breathe"), 2, C_TEXT);
     A->disc(FB, 128, 210, r + 14, RGB(20, 60, 80)); A->disc(FB, 128, 210, r, RGB(60, 170, 190)); A->disc(FB, 128, 210, r - 14 > 4 ? r - 14 : 4, RGB(120, 220, 225));
-    const char *msg = !s->running ? TR("toque para comecar", "tap to start") : s->phase == 0 ? TR("Inspire", "Breathe in") : s->phase == 1 ? TR("Segure", "Hold") : TR("Expire", "Breathe out");
+    const char *msg = !s->running ? TR("toque para começar", "tap to start") : s->phase == 0 ? TR("Inspire", "Breathe in") : s->phase == 1 ? TR("Segure", "Hold") : TR("Expire", "Breathe out");
     A->ctext(FB, 128, 340, msg, 2, RGB(235, 250, 255));
     A->text(FB, 70, 376, TR("ciclos", "cycles"), 1, C_MUTED); A->num(FB, 130, 372, s->cycles, 2, C_TEXT);
     return 1;

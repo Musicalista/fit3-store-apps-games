@@ -54,7 +54,7 @@ static int tick(F3App *self, int pressed, int x, int y, int tap) {
     }
     A->ctext(FB, 128, OY + 4 * TS + 3 * GP + 24, TR("deslize para juntar", "swipe to merge"), 1, C_MUTED);
     if (s->won && !s->over) A->ctext(FB, 128, 46, "2048!", 1, RGB(255, 220, 120));
-    if (s->over) over_box("Game over", s->score);
+    if (s->over) over_box(TR("Fim de jogo", "Game over"), s->score);
     return 1;
 }
 static void close_(F3App *self) { A->free(self); }
