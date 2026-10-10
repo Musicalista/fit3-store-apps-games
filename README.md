@@ -25,6 +25,7 @@ Fit3 store turns the Galaxy Fit3 into a small app-store device: you pick light a
 - **Create apps** (Windows): edit C, compile with one click and install, starting from templates or any of the 22 apps.
 - **Flash a firmware package**, with a full integrity check, four explicit confirmations and the way back to the stock firmware.
 - **Send files**: Game Boy ROMs and saves, backup and restore of a save (these need a firmware that has the emulator or the game).
+- **Recovery screen** on the watch (safe mode for the apps, clear the apps list, reset scores, how to restore the stock firmware).
 - **Watch tools** (Windows): firmware version, battery, test notification, vibration, brightness, language, reboot.
 - **Bilingual:** every app speaks Portuguese (with accents) or English according to the watch language; the Android apps follow the phone language; the Windows Manager is bilingual (English or Portuguese: it follows the Windows display language; there is a language button in its side bar, or start it with `--lang en` / `--lang pt`).
 
@@ -42,7 +43,7 @@ Fit3 store turns the Galaxy Fit3 into a small app-store device: you pick light a
 | `android/` | **Fit3 Apps**: an Android app (plain Java, no Gradle) that lists the apps, installs, updates and removes them, one or many at a time |
 | `pc/` | **Fit3 Manager for Windows** (C#, builds with the compiler that ships with Windows): connect, install apps, send ROMs and saves, **create apps**, and **flash firmware** |
 | `android-manager/` | **Fit3 Manager for Android**: the same flasher and app installer in one app (a tab for each) |
-| `firmware/` | `appsys.inc.c`: the "Meus apps" loader that runs inside the watch firmware (reference; it builds inside the firmware project, see below) |
+| `firmware/` | `appsys.inc.c`: the "Meus apps" loader and `recovery.inc.c`: the recovery screen, both running inside the watch firmware, with their PC tests (reference; they build inside the firmware project, see below) |
 | `docs/` | `APP_FORMAT.md`: the `.f3a` file format and the app API |
 
 ## The apps
@@ -125,6 +126,21 @@ To go back to the original firmware, flash the stock package the same way.
 `python apps/build_games.py` builds every app into `apps/dist` (or name some: `python apps/build_games.py snake tetris`). To add an app to the list, add a line to `GAMES` in `apps/build_games.py` (id, Portuguese name, English name, background and foreground colours as `RRGGBB`).
 
 Light apps run as native code on the watch, with no sandbox: only install apps you trust.
+
+## Recovery screen on the watch
+
+Every firmware package with the launcher has a **Recovery** tile in *Extra apps* (the lifebuoy icon). It does **not** touch the firmware image; it only works with the files in `/user/`:
+
+| Button | What it does |
+|---|---|
+| Safe mode on / off | Keeps "My apps" from loading any app (opening it shows this screen instead). Use it if an app misbehaves; turn it off here |
+| Clear the apps list | Empties `/user/apps/index.txt` (the apps disappear from the list; the files stay) |
+| Reset the apps' best scores | Empties the light apps' `.sav` files (the Game Boy and block-world saves are left alone) |
+| How to go back to stock | Shows the way back: Fit3 Manager > App store > Original Samsung, or flash `stock-aza3.bin` |
+
+Clear and reset need two taps within 4 seconds. The screen also repeats the one supported model and firmware version.
+
+**What it cannot do:** rescue a watch that does not boot. A boot loop caused by a bad firmware happens before any of this code runs, and an automatic safe mode would need a hook at the very start of the boot, which cannot be tested safely (a mistake there causes exactly the reboot loop we want to avoid), so it was deliberately not built. The protection against that is the pre-flash checks: only the exact model and version, the full package check, the four confirmations, and keeping the original firmware at hand.
 
 ## Usage tips
 

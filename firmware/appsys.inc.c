@@ -147,6 +147,9 @@ static void as_tick(void *timer) {
     if (a->dirty) { a->dirty = 0; as_draw_list(a); INVALIDATE(a->img); }
 }
 static int as_open(void *root, int from_menu) {
+#ifdef HAVE_RECOVERY
+    if (rc_safe()) return rc_open(root, from_menu);                             /* safe mode: no app is loaded; the recovery screen lets you turn it off */
+#endif
     AS *a = (AS *)MALLOC(sizeof(AS)); if (!a) return 0;
     u32 *blk = (u32 *)MALLOC(KBD_W * KBD_H * 2 + 8); if (!blk) { FREE(a); return 0; }
     for (unsigned i = 0; i < sizeof *a; i++) ((u8 *)a)[i] = 0;
