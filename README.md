@@ -106,6 +106,39 @@ To go back to the original firmware, flash the stock package the same way.
 
 Light apps run as native code on the watch, with no sandbox: only install apps you trust.
 
+## Usage tips
+
+**First time**
+1. Check *Settings > About > Software information*: it must read exactly `R390XXU0AZA3`. If it does not, flash nothing.
+2. Keep the original (stock) firmware package outside the project folder so you can go back.
+3. Start with a package that changes only Bluetooth (the "always open serial" patch: the watch stays discoverable and connectable). That patch is the one confirmed on a real watch.
+4. Only then flash a package that has the app store loader. Larger packages (more games, Internet) have not been tested on a watch.
+
+**Before flashing**
+- Watch at 50% battery or more, next to the PC or phone.
+- Close Galaxy Wearable and anything else using the watch's Bluetooth: the watch usually serves one client at a time.
+- Test the connection first (**Test connection** on Windows, **Connect** on Android). If it does not connect, **do not flash**.
+- If it fails: disconnect the watch from the main phone, restart the watch, toggle Bluetooth and try again.
+- If you are not in a hurry, use the full read-back after the transfer: much slower, but safer.
+- After you tap "Start installation" it cannot be cancelled: do not power the watch off and do not repeat the command.
+
+**Apps and games**
+- Install **`hello`** first: it shows whether the watch can run apps loaded into RAM (the part not yet verified). If it does not run, no light app will.
+- The watch keeps up to **12 apps** at a time: tick **Select** to choose and use **Remove** to swap. On the watch they are under *Extra apps > Meus apps*.
+- **Clock** and **Alarm** need the v1.7 loader. The alarm rings only while the app is open and the screen is on.
+- Controls: Snake and 2048 use swipes; Tetris: drag sideways, tap rotates, drag down speeds up; Minesweeper: hold to flag.
+- Best scores are saved on the watch in `/user/*.sav`. Back up the block-world save before reflashing the firmware.
+
+**Writing your own app (Windows, "Criar app" tab)**
+- Start from a template or an example and use a short lowercase id.
+- Apps have no C library (no `printf` or `malloc`): the compiler tells you.
+- Try it in the PC simulator in this repository before installing it on the watch.
+
+**Cautions**
+- With the serial patch the watch is always discoverable: anyone nearby can try to pair. Use it in a trusted place and go back to the stock firmware when you are done testing if you prefer.
+- Apps run as native code with no sandbox: only install apps you trust.
+- If something goes wrong, note the exact message (the Manager's **Details** button shows the log).
+
 ## Status
 
 | Part | Status |
