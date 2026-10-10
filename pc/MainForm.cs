@@ -86,6 +86,7 @@ namespace Fit3Manager
         Panel PageHome()
         {
             Panel p = new Panel(); int y = 0;
+            Panel wc = Section(p, "Antes de qualquer coisa: modelo compatível", "Só o Galaxy Fit3 SM-R390 com o firmware R390XXU0AZA3 é suportado. Outros modelos, variantes regionais e outras versões NÃO são suportados e não foram testados: gravar firmware neles pode causar um ciclo de reinicialização ou deixar o relógio inutilizável. Confira em Configurações > Sobre > Informações do software.", 820, ref y); wc.Height = 130; wc.BackColor = Color.FromArgb(253, 236, 234); y += 154;
             Panel c1 = Section(p, "1 · Conecte o relógio", "Pareie o Galaxy Fit3 com este PC no Bluetooth do Windows, feche o Galaxy Wearable e deixe o relógio perto.", 820, ref y); c1.Height = 190;
             Label l = Ui.Lbl("Relógio:", 10f, true, Ui.Text); l.Left = 16; l.Top = 84; c1.Controls.Add(l);
             cbDev = new ComboBox(); cbDev.DropDownStyle = ComboBoxStyle.DropDownList; cbDev.Left = 90; cbDev.Top = 80; cbDev.Width = 420; c1.Controls.Add(cbDev);

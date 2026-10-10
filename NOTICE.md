@@ -14,6 +14,10 @@ The light-app system (SDK, loader, `.f3a` format, the 22 apps), the Fit3 Apps in
 
 No Samsung firmware or firmware image is included, and none should be committed (`*.bin` is ignored). Galaxy Fit3 and Samsung are trademarks of their owners; this project is unofficial and not affiliated with them.
 
+## Supported device
+
+Only the Samsung Galaxy Fit3 (SM-R390) running firmware R390XXU0AZA3 is supported. Other models, regional variants, firmware versions and watches are not supported and untested: flashing on them can cause a reboot loop or leave the watch unusable. See the warning at the top of the README.
+
 ## Use at your own risk
 
 Flashing firmware can make a watch unusable, and light apps run as native code on the watch with no sandbox. Everything here has been tested on a PC only; nothing has been verified on a real watch yet.

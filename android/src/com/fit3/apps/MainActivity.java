@@ -108,7 +108,7 @@ public final class MainActivity extends Activity {
         listCard = new LinearLayout(this); listCard.setOrientation(LinearLayout.VERTICAL); col.addView(listCard);
         col.addView(button(L.t("+  Adicionar um app do celular (.f3a)", "+  Add an app from the phone (.f3a)"), false, new Runnable() { public void run() { pickFile(); } }), lp(-1, -2, 0, 0, 0, 12));
 
-        hint = label(L.t("Precisa do firmware com o ícone \"Meus apps\" (pacotes \"store-*\"). No relógio: Apps extras > Meus apps. Os apps rodam como código nativo no relógio: instale só os que você confia. Nada aqui altera o firmware.", "Needs the firmware with the \"Meus apps\" tile (\"store-*\" packages). On the watch: Extra apps > Meus apps. Apps run as native code on the watch: install only ones you trust. Nothing here changes the firmware."), 12, cMuted, false);
+        hint = label(L.t("Só o Galaxy Fit3 SM-R390 (firmware R390XXU0AZA3) é suportado; em outros modelos o app pode não funcionar ou causar reinicializações. Precisa do firmware com o ícone \"Meus apps\" (pacotes \"store-*\"). No relógio: Apps extras > Meus apps. Os apps rodam como código nativo no relógio: instale só os que você confia. Nada aqui altera o firmware.", "Only the Galaxy Fit3 SM-R390 (firmware R390XXU0AZA3) is supported; on other models the app may not work or may cause restarts. Needs the firmware with the \"Meus apps\" tile (\"store-*\" packages). On the watch: Extra apps > Meus apps. Apps run as native code on the watch: install only ones you trust. Nothing here changes the firmware."), 12, cMuted, false);
         hint.setPadding(dp(6), 0, dp(6), 0); col.addView(hint);
 
         loadAssets(); askPermissions(); loadDevices(); render();

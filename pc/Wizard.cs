@@ -9,13 +9,13 @@ namespace Fit3Manager
     public sealed class InstallWizard : Form
     {
         readonly Func<Watch> newWatch; readonly byte[] pkg; readonly Fwd.Info info; readonly string title; readonly Action<string> log;
-        Panel p0, p1, p2, p3; Label lblStep, lblProg, lblErr, lblDone, lblDoneTitle; ProgressBar bar; CheckBox c1, c2, c3, cRead; Button bSend, bCancelSend, bRetry, bStart, bClose;
+        Panel p0, p1, p2, p3; Label lblStep, lblProg, lblErr, lblDone, lblDoneTitle; ProgressBar bar; CheckBox c1, c2, c3, c4, cRead; Button bSend, bCancelSend, bRetry, bStart, bClose;
         volatile bool busy, staged, started; Watch watch; SynchronizationContext ui;
 
         public InstallWizard(string title, byte[] pkg, Fwd.Info info, Func<Watch> newWatch, Action<string> log)
         {
             this.title = title; this.pkg = pkg; this.info = info; this.newWatch = newWatch; this.log = log; ui = SynchronizationContext.Current;
-            Text = "Instalar: " + title; Width = 640; Height = 560; StartPosition = FormStartPosition.CenterParent; FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false; MinimizeBox = false; BackColor = Ui.Bg; Font = Ui.F(10f, false);
+            Text = "Instalar: " + title; Width = 640; Height = 660; StartPosition = FormStartPosition.CenterParent; FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false; MinimizeBox = false; BackColor = Ui.Bg; Font = Ui.F(10f, false);
             lblStep = Ui.Lbl("", 10f, true, Ui.Accent); lblStep.Left = 24; lblStep.Top = 14; Controls.Add(lblStep);
             p0 = Page(); p1 = Page(); p2 = Page(); p3 = Page(); Controls.AddRange(new Control[] { p0, p1, p2, p3 });
             BuildCheck(); BuildSend(); BuildReady(); BuildDone(); Show(0);
@@ -25,7 +25,7 @@ namespace Fit3Manager
                 if (staged && !started && MessageBox.Show("O arquivo já está no relógio, mas a instalação ainda não foi iniciada. Fechar mesmo assim?\n\n(Você pode abrir de novo e iniciar depois; o arquivo continua lá. Se desistir, mande outro pacote por cima ou deixe como está: nada é instalado sem o comando.)", "Fechar", MessageBoxButtons.YesNo) != DialogResult.Yes) e.Cancel = true;
             };
         }
-        Panel Page() { Panel p = new Panel(); p.Left = 16; p.Top = 44; p.Width = 600; p.Height = 470; p.BackColor = Ui.Bg; p.Visible = false; return p; }
+        Panel Page() { Panel p = new Panel(); p.Left = 16; p.Top = 44; p.Width = 600; p.Height = 570; p.BackColor = Ui.Bg; p.Visible = false; return p; }
         void Show(int n)
         {
             p0.Visible = n == 0; p1.Visible = n == 1; p2.Visible = n == 2; p3.Visible = n == 3;
@@ -36,17 +36,19 @@ namespace Fit3Manager
         void BuildCheck()
         {
             Label t = Ui.Lbl(title, 16f, true, Ui.Text); t.Left = 8; t.Top = 4; p0.Controls.Add(t);
-            Panel c = Ui.Card(576, 120); c.Left = 8; c.Top = 44;
+            Panel c = Ui.Card(576, 84); c.Left = 8; c.Top = 44;
             c.Controls.Add(Ui.Wrap("Pacote verificado por inteiro (estrutura, somas de verificação e componentes).\r\n" + info.Count + " componentes · " + (info.Size / 1048576.0).ToString("0.0") + " MB · " + (info.Stock ? "firmware ORIGINAL da Samsung" : "firmware MODIFICADO") + "\r\nSHA-256: " + info.Sha256.Substring(0, 32) + "…", 10f, Ui.Muted, 540));
             p0.Controls.Add(c);
-            Label q = Ui.Lbl("Marque tudo para continuar:", 11f, true, Ui.Text); q.Left = 8; q.Top = 180; p0.Controls.Add(q);
-            c1 = Chk("O relógio está com 50% de bateria ou mais e perto deste PC.", 210); c2 = Chk("Fechei o Galaxy Wearable e outros programas que usam o Bluetooth do relógio.", 244);
-            c3 = Chk("Entendo o risco: gravar firmware pode deixar o relógio inutilizável. Tenho o firmware original à mão.", 278);
-            cRead = new CheckBox(); cRead.Text = "Conferir byte a byte depois do envio (bem mais lento, mais seguro)"; cRead.Left = 8; cRead.Top = 330; cRead.Width = 570; cRead.Font = Ui.F(9.5f, false); cRead.ForeColor = Ui.Muted; p0.Controls.Add(cRead);
-            Label w = Ui.Wrap("Se você já enviou outros pacotes de atualização e não sabe se ficaram no relógio, não continue. A verificação de integridade não garante que um firmware modificado funcione.", 9.5f, Ui.Warn, 570); w.Left = 8; w.Top = 362; p0.Controls.Add(w);
-            bSend = Ui.Primary("Enviar ao relógio", delegate { StartSend(); }); bSend.Left = 8; bSend.Top = 420; bSend.Enabled = false; p0.Controls.Add(bSend);
-            EventHandler h = delegate { bSend.Enabled = c1.Checked && c2.Checked && c3.Checked; }; c1.CheckedChanged += h; c2.CheckedChanged += h; c3.CheckedChanged += h;
-            Button cancel = Ui.Soft("Cancelar", delegate { Close(); }); cancel.Left = 190; cancel.Top = 420; p0.Controls.Add(cancel);
+            Panel wp = new Panel(); wp.Left = 8; wp.Top = 136; wp.Width = 576; wp.Height = 92; wp.BackColor = Color.FromArgb(253, 236, 234); Label wt = Ui.Wrap("ATENÇÃO: só o Galaxy Fit3 SM-R390 com o firmware R390XXU0AZA3 é suportado. Outros modelos, variantes regionais e outras versões NÃO são suportados e não foram testados: gravar este pacote neles pode causar um ciclo de reinicialização (o relógio reinicia sem parar) ou deixá-lo inutilizável. Confira em Configurações > Sobre > Informações do software.", 9.5f, Ui.Bad, 556); wt.Left = 10; wt.Top = 8; wp.Controls.Add(wt); p0.Controls.Add(wp);
+            Label q = Ui.Lbl("Marque tudo para continuar:", 11f, true, Ui.Text); q.Left = 8; q.Top = 238; p0.Controls.Add(q);
+            c1 = Chk("O relógio está com 50% de bateria ou mais e perto deste PC.", 266); c2 = Chk("Fechei o Galaxy Wearable e outros programas que usam o Bluetooth do relógio.", 298);
+            c3 = Chk("Entendo o risco: gravar firmware pode deixar o relógio inutilizável. Tenho o firmware original à mão.", 330); c3.Height = 44;
+            c4 = Chk("Confirmo que meu relógio é um Galaxy Fit3 SM-R390 com o firmware R390XXU0AZA3 e entendo o risco de ciclo de reinicialização em outro modelo.", 378); c4.Height = 44;
+            cRead = new CheckBox(); cRead.Text = "Conferir byte a byte depois do envio (bem mais lento, mais seguro)"; cRead.Left = 8; cRead.Top = 428; cRead.Width = 570; cRead.Font = Ui.F(9.5f, false); cRead.ForeColor = Ui.Muted; p0.Controls.Add(cRead);
+            Label w = Ui.Wrap("Se você já enviou outros pacotes de atualização e não sabe se ficaram no relógio, não continue. A verificação de integridade não garante que um firmware modificado funcione.", 9.5f, Ui.Warn, 570); w.Left = 8; w.Top = 458; p0.Controls.Add(w);
+            bSend = Ui.Primary("Enviar ao relógio", delegate { StartSend(); }); bSend.Left = 8; bSend.Top = 520; bSend.Enabled = false; p0.Controls.Add(bSend);
+            EventHandler h = delegate { bSend.Enabled = c1.Checked && c2.Checked && c3.Checked && c4.Checked; }; c1.CheckedChanged += h; c2.CheckedChanged += h; c3.CheckedChanged += h; c4.CheckedChanged += h;
+            Button cancel = Ui.Soft("Cancelar", delegate { Close(); }); cancel.Left = 190; cancel.Top = 520; p0.Controls.Add(cancel);
         }
         CheckBox Chk(string text, int top) { CheckBox c = new CheckBox(); c.Text = text; c.Left = 8; c.Top = top; c.Width = 570; c.Height = 30; c.Font = Ui.F(10f, false); p0.Controls.Add(c); return c; }
         void BuildSend()

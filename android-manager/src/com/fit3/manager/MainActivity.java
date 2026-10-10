@@ -113,7 +113,7 @@ public final class MainActivity extends Activity {
         listCard = new LinearLayout(this); listCard.setOrientation(LinearLayout.VERTICAL); pageApps.addView(listCard);
         pageApps.addView(button(L.t("+  Adicionar um app do celular (.f3a)", "+  Add an app from the phone (.f3a)"), false, new Runnable() { public void run() { pickFile(); } }), lp(-1, -2, 0, 0, 0, 12));
 
-        hint = label(L.t("Precisa do firmware com o ícone \"Meus apps\" (pacotes \"store-*\"). No relógio: Apps extras > Meus apps. Os apps rodam como código nativo no relógio: instale só os que você confia. Nada aqui altera o firmware.", "Needs the firmware with the \"Meus apps\" tile (\"store-*\" packages). On the watch: Extra apps > Meus apps. Apps run as native code on the watch: install only ones you trust. Nothing here changes the firmware."), 12, cMuted, false);
+        hint = label(L.t("Só o Galaxy Fit3 SM-R390 (firmware R390XXU0AZA3) é suportado; em outros modelos o app pode não funcionar ou causar reinicializações. Precisa do firmware com o ícone \"Meus apps\" (pacotes \"store-*\"). No relógio: Apps extras > Meus apps. Os apps rodam como código nativo no relógio: instale só os que você confia. Nada aqui altera o firmware.", "Only the Galaxy Fit3 SM-R390 (firmware R390XXU0AZA3) is supported; on other models the app may not work or may cause restarts. Needs the firmware with the \"Meus apps\" tile (\"store-*\" packages). On the watch: Extra apps > Meus apps. Apps run as native code on the watch: install only ones you trust. Nothing here changes the firmware."), 12, cMuted, false);
         hint.setPadding(dp(6), 0, dp(6), 0); pageApps.addView(hint);
 
         col.addView(pageFw); col.addView(pageApps); showTab(1);
@@ -131,6 +131,11 @@ public final class MainActivity extends Activity {
 
     private void buildFirmwarePage() {
         pageFw = new LinearLayout(this); pageFw.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout model = card(L.t("Atenção: modelo compatível", "Warning: supported model only"), null);
+        model.setBackground(shape(dark ? 0xFF3A1E1E : 0xFFFDECEA, 20));
+        model.addView(label(L.t("Só o Galaxy Fit3 SM-R390 com o firmware R390XXU0AZA3 é suportado. Outros modelos, variantes regionais e outras versões NÃO são suportados e não foram testados: gravar firmware neles pode causar um ciclo de reinicialização (o relógio reinicia sem parar) ou deixá-lo inutilizável. Confira em Configurações > Sobre > Informações do software.",
+            "Only the Galaxy Fit3 SM-R390 running firmware R390XXU0AZA3 is supported. Other models, regional variants and other versions are NOT supported and have not been tested: flashing firmware on them can cause a reboot loop (the watch restarts over and over) or leave it unusable. Check Settings > About > Software information."), 13, cBad, true));
+        pageFw.addView(model, lp(-1, -2, 0, 0, 0, 12));
         LinearLayout warn = card(L.t("Antes de gravar", "Before flashing"), null);
         warn.addView(label(L.t("1. Deixe o relógio com 50% ou mais de bateria, perto do celular.\n2. Confira em Configurações > Sobre > Informações do software que a versão é R390XXU0AZA3.\n3. Guarde o stock-aza3.bin para voltar ao original.\n4. Gravar firmware pode deixar o relógio inutilizável. A verificação NÃO garante que um firmware modificado funcione.",
             "1. Keep the watch at 50% or more, close to the phone.\n2. Check in Settings > About > Software information that the version is R390XXU0AZA3.\n3. Keep stock-aza3.bin to go back to the original.\n4. Flashing can make the watch unusable. The check does NOT guarantee that a modified firmware works."), 13, cMuted, false));
@@ -186,14 +191,15 @@ public final class MainActivity extends Activity {
     private void confirmTransfer() {
         if (busy || !watchOk || fw == null || !risk.isChecked()) return;
         LinearLayout box = new LinearLayout(this); box.setOrientation(LinearLayout.VERTICAL); box.setPadding(dp(20), dp(8), dp(20), 0);
-        final CheckBox a = new CheckBox(this), b2 = new CheckBox(this), c = new CheckBox(this);
+        final CheckBox a = new CheckBox(this), b2 = new CheckBox(this), c = new CheckBox(this), m = new CheckBox(this);
         a.setText(L.t("O relógio está carregado (50% ou mais) e perto do celular.", "The watch is charged (50% or more) and close to the phone.")); b2.setText(L.t("Não há outros pacotes OTA antigos no relógio (ou tenho certeza do que faço).", "There are no old OTA packages on the watch (or I am sure of what I do).")); c.setText(L.t("Tenho o firmware original (stock-aza3.bin) para voltar.", "I have the original firmware (stock-aza3.bin) to go back."));
-        box.addView(a); box.addView(b2); box.addView(c);
+        m.setText(L.t("Meu relógio é um Galaxy Fit3 SM-R390 com o firmware R390XXU0AZA3. Entendo o risco de ciclo de reinicialização em outro modelo.", "My watch is a Galaxy Fit3 SM-R390 running firmware R390XXU0AZA3. I understand the reboot-loop risk on any other model."));
+        box.addView(m); box.addView(a); box.addView(b2); box.addView(c);
         final AlertDialog dlg = new AlertDialog.Builder(this).setTitle(L.t("Confirmar o envio", "Confirm the transfer")).setMessage((info.stock ? L.t("Firmware padrão AZA3", "Stock AZA3 firmware") : fwName) + "\n").setView(box)
             .setPositiveButton(L.t("Enviar", "Transfer"), new DialogInterface.OnClickListener() { public void onClick(DialogInterface d, int w) { transfer(); } }).setNegativeButton(L.t("Cancelar", "Cancel"), null).create();
         dlg.show(); final android.widget.Button ok = dlg.getButton(AlertDialog.BUTTON_POSITIVE); ok.setEnabled(false);
-        CompoundButton.OnCheckedChangeListener l = new CompoundButton.OnCheckedChangeListener() { public void onCheckedChanged(CompoundButton v, boolean x) { ok.setEnabled(a.isChecked() && b2.isChecked() && c.isChecked()); } };
-        a.setOnCheckedChangeListener(l); b2.setOnCheckedChangeListener(l); c.setOnCheckedChangeListener(l);
+        CompoundButton.OnCheckedChangeListener l = new CompoundButton.OnCheckedChangeListener() { public void onCheckedChanged(CompoundButton v, boolean x) { ok.setEnabled(m.isChecked() && a.isChecked() && b2.isChecked() && c.isChecked()); } };
+        m.setOnCheckedChangeListener(l); a.setOnCheckedChangeListener(l); b2.setOnCheckedChangeListener(l); c.setOnCheckedChangeListener(l);
     }
     private void transfer() {
         final BluetoothDevice d = selected(); if (d == null || fw == null) return; begin(); final byte[] bytes = fw; final boolean full = readback.isChecked();

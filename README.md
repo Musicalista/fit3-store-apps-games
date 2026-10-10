@@ -4,6 +4,17 @@ Small native apps and games ("light apps", `.f3a` files) for the **Samsung Galax
 
 > **Unofficial. Not affiliated with Samsung.** This repository contains **no Samsung firmware** and no firmware images of any kind. The firmware flasher in the Fit3 Manager is a port of the protocol and package checks of [yuriyurin/fit3-flasher](https://github.com/yuriyurin/fit3-flasher): see [NOTICE.md](NOTICE.md). Everything here has been tested **on a PC only** (a simulator and a mock watch). **Not yet verified on a real watch:** the Bluetooth transfer from the phone, and whether the watch can execute code loaded into RAM, which every light app depends on. The firmware loader needs a patched firmware; flashing firmware can make a watch unusable, so read the warnings in the firmware project before you flash anything.
 
+## ⚠️ Read this first: supported device and risk of reboot loops
+
+This project is built **only** for the **Samsung Galaxy Fit3 (SM-R390) running firmware R390XXU0AZA3**. Other Galaxy Fit3 variants, regional models, other firmware versions and other watches are **not supported and have not been tested**. Flashing a firmware or a package on an unsupported watch can put it in a **reboot loop** (it restarts over and over) or leave it unusable, and getting it back may need special tools or may not be possible.
+
+Before you flash anything:
+1. Open *Settings > About > Software information* on the watch and check that the version is exactly `R390XXU0AZA3`. If it is not, **do not flash**.
+2. Keep the original (stock) firmware package and know how you will restore it.
+3. Only continue if you accept the risk. Nothing here comes with any warranty.
+
+The light apps are also made for this watch's 256x402 screen and firmware; on other models they may not work or may cause restarts. Everything has been tested on a PC only, not on a real watch (except where a section says otherwise).
+
 ## What is in here
 
 | Folder | What |
