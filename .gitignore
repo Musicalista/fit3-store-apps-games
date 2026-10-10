@@ -1,0 +1,16 @@
+# never commit firmware (Samsung's property), build output, keystores or secrets
+*.bin
+*.elf
+*.o
+*.exe
+*.apk
+*.idsig
+*.keystore
+*.keystore.pw
+*.pw
+*.key
+out/
+out_pc/
+dist/*.apk
+*.ppm
+__pycache__/
