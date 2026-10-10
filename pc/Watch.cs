@@ -86,8 +86,8 @@ namespace Fit3Manager
                 catch (SocketException e)
                 {
                     s.Close();
-                    string why = e.SocketErrorCode == SocketError.ConnectionRefused ? "o relógio recusou (canal ocupado?)" : e.SocketErrorCode == SocketError.TimedOut ? "tempo esgotado (relógio longe, dormindo ou ocupado)" : e.SocketErrorCode == SocketError.HostDown ? "relógio fora de alcance" : e.SocketErrorCode.ToString();
-                    throw new IOException("Não consegui abrir o serviço serial do relógio: " + why + " [Winsock " + e.ErrorCode + "].");
+                    string why = e.SocketErrorCode == SocketError.ConnectionRefused ? Lang.T("o relógio recusou (canal ocupado?)") : e.SocketErrorCode == SocketError.TimedOut ? Lang.T("tempo esgotado (relógio longe, dormindo ou ocupado)") : e.SocketErrorCode == SocketError.HostDown ? Lang.T("relógio fora de alcance") : e.SocketErrorCode.ToString();
+                    throw new IOException(Lang.T("Não consegui abrir o serviço serial do relógio: ") + why + " [Winsock " + e.ErrorCode + "].");
                 }
                 return new SockConn(s);
             };
@@ -104,7 +104,7 @@ namespace Fit3Manager
         public Watch(ConnFactory f) { factory = f; }
         public void Abort() { aborted = true; }
         public bool IsAborted { get { return aborted; } }
-        void Check() { if (aborted) throw new IOException("Operação interrompida."); }
+        void Check() { if (aborted) throw new IOException(Lang.T("Operação interrompida.")); }
         void Sleep(int ms) { int end = Environment.TickCount + ms; while (unchecked(end - Environment.TickCount) > 0) { Check(); Thread.Sleep(20); } }
 
         public sealed class Link
@@ -119,15 +119,15 @@ namespace Fit3Manager
                 while (got < n)
                 {
                     w.Check(); int av = c.Available;
-                    if (av > 0) { int r = c.Read(b, got, Math.Min(av, n - got)); if (r <= 0) throw new IOException("A conexão com o relógio foi perdida."); got += r; }
-                    else { if (unchecked(end - Environment.TickCount) < 0) throw new IOException("O relógio não respondeu a tempo. Conecte de novo."); Thread.Sleep(4); }
+                    if (av > 0) { int r = c.Read(b, got, Math.Min(av, n - got)); if (r <= 0) throw new IOException(Lang.T("A conexão com o relógio foi perdida.")); got += r; }
+                    else { if (unchecked(end - Environment.TickCount) < 0) throw new IOException(Lang.T("O relógio não respondeu a tempo. Conecte de novo.")); Thread.Sleep(4); }
                 }
                 return b;
             }
             public void Expect(string text)
             {
                 string got = Encoding.ASCII.GetString(ReadExact(text.Length, 30000));
-                if (got != text) throw new IOException("O relógio recusou a transferência (esperava \"" + text + "\", veio \"" + got + "\"). Conecte de novo.");
+                if (got != text) throw new IOException(Lang.T("O relógio recusou a transferência (esperava \"") + text + Lang.T("\", veio \"") + got + Lang.T("\"). Conecte de novo."));
             }
             public void Drain() { while (c.Available > 0) { byte[] t = new byte[c.Available]; c.Read(t, 0, t.Length); } }
             /// <summary>Sends "00AT^cmd" and returns whatever the watch prints, waiting until it goes quiet.</summary>
@@ -151,12 +151,12 @@ namespace Fit3Manager
             {
                 Drain(); Send(path.Insert(0, "061") + "\0"); byte[] h = ReadExact(5, 15000);
                 if (h[0] != 0x40) return null;
-                int total = Be32(h, 1); if (total < 0 || total > 16 * 1024 * 1024) throw new IOException("Arquivo grande demais (" + total + " bytes).");
+                int total = Be32(h, 1); if (total < 0 || total > 16 * 1024 * 1024) throw new IOException(Lang.T("Arquivo grande demais (") + total + " bytes).");
                 byte[] data = new byte[total]; int got = 0;
                 while (got < total)
                 {
                     Send("062"); byte[] hh = ReadExact(5, 15000); int n = Be32(hh, 1);
-                    if (hh[0] != 0x40 || n <= 0 || n > total - got) throw new IOException("Bloco inválido na leitura.");
+                    if (hh[0] != 0x40 || n <= 0 || n > total - got) throw new IOException(Lang.T("Bloco inválido na leitura."));
                     byte[] blk = ReadExact(n, 60000); ReadExact(4, 60000); Buffer.BlockCopy(blk, 0, data, got, n); got += n; if (progress != null) progress(got, total);
                 }
                 Send("062"); Thread.Sleep(100); return data;
@@ -193,7 +193,7 @@ namespace Fit3Manager
         /// <summary>Writes a user file. Refuses system paths: firmware goes through Stage().</summary>
         public void WriteUserFile(string path, byte[] data, Action<long, long, long> progress)
         {
-            if (!path.StartsWith("/user/") || path.StartsWith("/user/ota") || path.StartsWith("/user/rescue") || path.Contains("..") || path.Length > 100) throw new IOException("Caminho não permitido: só arquivos em /user/ (fora de ota e rescue).");
+            if (!path.StartsWith("/user/") || path.StartsWith("/user/ota") || path.StartsWith("/user/rescue") || path.Contains("..") || path.Length > 100) throw new IOException(Lang.T("Caminho não permitido: só arquivos em /user/ (fora de ota e rescue)."));
             WithLink(delegate(Link l) { l.WriteFile(path, data, progress); });
         }
         // ---- light apps: /user/apps/<id>.f3a plus the index the watch reads. One operation per connection, like the original flasher.
@@ -209,10 +209,10 @@ namespace Fit3Manager
         static byte[] IndexBytes(List<string> idx) { return Encoding.GetEncoding(28591).GetBytes(idx.Count == 0 ? "\n" : string.Join("\n", idx.ToArray()) + "\n"); }
         public void InstallLight(string id, byte[] f3a, string indexLine, Action<long, long, long> progress)
         {
-            if (!PlainId(id)) throw new IOException("Identificador de app inválido.");
-            if (f3a.Length < 64 || f3a[0] != 0x46 || f3a[1] != 0x33 || f3a[2] != 0x41 || f3a[3] != 0x31 || f3a.Length > 60000) throw new IOException("Arquivo .f3a inválido.");
+            if (!PlainId(id)) throw new IOException(Lang.T("Identificador de app inválido."));
+            if (f3a.Length < 64 || f3a[0] != 0x46 || f3a[1] != 0x33 || f3a[2] != 0x41 || f3a[3] != 0x31 || f3a.Length > 60000) throw new IOException(Lang.T("Arquivo .f3a inválido."));
             List<string> idx = ReadIndex(); int at = -1; for (int i = 0; i < idx.Count; i++) if (idx[i].StartsWith(id + ";")) at = i;
-            if (at < 0 && idx.Count >= 12) throw new IOException("A lista de apps do relógio está cheia (máx. 12). Remova algum.");
+            if (at < 0 && idx.Count >= 12) throw new IOException(Lang.T("A lista de apps do relógio está cheia (máx. 12). Remova algum."));
             Sleep(1500); WriteUserFile("/user/apps/" + id + ".f3a", f3a, progress); Sleep(1500);
             if (at >= 0) idx[at] = indexLine; else idx.Add(indexLine);
             WriteUserFile(AppsIndex, IndexBytes(idx), null);
@@ -230,20 +230,20 @@ namespace Fit3Manager
             WithLink(delegate(Link l)
             {
                 l.Send("061" + RemotePath + "\0"); byte[] h = l.ReadExact(5, 30000);
-                if (h[0] != 0x40) throw new IOException("Não foi possível conferir o arquivo no relógio.");
+                if (h[0] != 0x40) throw new IOException(Lang.T("Não foi possível conferir o arquivo no relógio."));
                 int total = (h[1] << 24) | (h[2] << 16) | (h[3] << 8) | h[4];
-                if (total != bytes.Length) throw new IOException("O tamanho do arquivo no relógio não bate. Instalação bloqueada.");
+                if (total != bytes.Length) throw new IOException(Lang.T("O tamanho do arquivo no relógio não bate. Instalação bloqueada."));
                 Progress("verify", 0, total, 0);
                 if (!fullReadback) return;
                 Sleep(250); int offset = 0;
                 while (offset < total)
                 {
                     l.Send("062"); byte[] hh = l.ReadExact(5, 30000); int n = (hh[1] << 24) | (hh[2] << 16) | (hh[3] << 8) | hh[4];
-                    if (hh[0] != 0x40 || n <= 0 || n > 1024 * 1024 || n > total - offset) throw new IOException("Bloco de conferência inválido.");
+                    if (hh[0] != 0x40 || n <= 0 || n > 1024 * 1024 || n > total - offset) throw new IOException(Lang.T("Bloco de conferência inválido."));
                     byte[] data = l.ReadExact(n, 180000), sum = l.ReadExact(4, 180000); uint actual = 0;
-                    for (int i = 0; i < n; i++) { actual = unchecked(actual + data[i]); if (data[i] != bytes[offset + i]) throw new IOException("O conteúdo no relógio não bate. Instalação bloqueada."); }
+                    for (int i = 0; i < n; i++) { actual = unchecked(actual + data[i]); if (data[i] != bytes[offset + i]) throw new IOException(Lang.T("O conteúdo no relógio não bate. Instalação bloqueada.")); }
                     uint want = (uint)((sum[0] << 24) | (sum[1] << 16) | (sum[2] << 8) | sum[3]);
-                    if (actual != want) throw new IOException("Erro de soma de verificação na leitura.");
+                    if (actual != want) throw new IOException(Lang.T("Erro de soma de verificação na leitura."));
                     offset += n; Progress("verify", offset, total, 0); Sleep(250);
                 }
                 l.Send("062"); Sleep(100);
@@ -255,7 +255,7 @@ namespace Fit3Manager
             Sleep(2200); string reply = null;
             WithLink(delegate(Link l)
             {
-                sending[0] = true; Log("Enviando o comando OTA."); l.Send("00AT^OTA_UPDATE");
+                sending[0] = true; Log(Lang.T("Enviando o comando OTA.")); l.Send("00AT^OTA_UPDATE");
                 try { reply = Encoding.UTF8.GetString(l.ReadExact(4, 6000)); } catch (IOException) { reply = null; }
             });
             return reply;

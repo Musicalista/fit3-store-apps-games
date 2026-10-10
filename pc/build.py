@@ -18,7 +18,7 @@ def csc(target, out, files):
     r = subprocess.run(args + files, capture_output=True, text=True)
     if r.returncode: sys.exit(r.stdout + r.stderr)
 
-csc("winexe", os.path.join(OUT, "Fit3Manager.exe"), src("Fwd.cs", "Watch.cs", "Catalog.cs", "Ui.cs", "Wizard.cs", "AppBuilder.cs", "MainForm.cs", "Creator.cs"))
+csc("winexe", os.path.join(OUT, "Fit3Manager.exe"), src("Lang.cs", "Fwd.cs", "Watch.cs", "Catalog.cs", "Ui.cs", "Wizard.cs", "AppBuilder.cs", "MainForm.cs", "Creator.cs"))
 sdk = os.path.join(OUT, "sdk"); shutil.rmtree(sdk, ignore_errors=True); os.makedirs(os.path.join(sdk, "examples"))
 for f in ("f3app.h", "f3game.h", "app.ld"): shutil.copy(os.path.join(ROOT, "apps", f), sdk)
 for f in os.listdir(os.path.join(ROOT, "apps", "src")): shutil.copy(os.path.join(ROOT, "apps", "src", f), os.path.join(sdk, "examples"))
@@ -26,5 +26,5 @@ shutil.copytree(os.path.join(H, "templates"), os.path.join(sdk, "templates"))
 apps = os.path.join(OUT, "apps"); shutil.rmtree(apps, ignore_errors=True); shutil.copytree(os.path.join(ROOT, "apps", "dist"), apps)
 print("built", os.path.join(OUT, "Fit3Manager.exe"))
 if "--test" in sys.argv:
-    t = os.path.join(OUT, "Fit3ManagerTests.exe"); csc("exe", t, src("Fwd.cs", "Watch.cs", "Catalog.cs", "AppBuilder.cs", "Tests.cs"))
+    t = os.path.join(OUT, "Fit3ManagerTests.exe"); csc("exe", t, src("Lang.cs", "Fwd.cs", "Watch.cs", "Catalog.cs", "AppBuilder.cs", "Tests.cs"))
     sys.exit(subprocess.run([t], cwd=os.path.join(ROOT, "apps")).returncode)

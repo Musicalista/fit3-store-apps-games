@@ -26,7 +26,7 @@ Fit3 store turns the Galaxy Fit3 into a small app-store device: you pick light a
 - **Flash a firmware package**, with a full integrity check, four explicit confirmations and the way back to the stock firmware.
 - **Send files**: Game Boy ROMs and saves, backup and restore of a save (these need a firmware that has the emulator or the game).
 - **Watch tools** (Windows): firmware version, battery, test notification, vibration, brightness, language, reboot.
-- **Bilingual:** every app speaks Portuguese (with accents) or English according to the watch language; the Android apps follow the phone language; the Windows Manager interface is in Portuguese.
+- **Bilingual:** every app speaks Portuguese (with accents) or English according to the watch language; the Android apps follow the phone language; the Windows Manager is bilingual (English or Portuguese: it follows the Windows display language; there is a language button in its side bar, or start it with `--lang en` / `--lang pt`).
 
 **Games (12):** Snake, Flappy, Tetris, 2048, Pong, Tic-tac-toe, Memory, Sudoku, Minesweeper, Breakout, Simon, Reaction test.
 
@@ -90,7 +90,7 @@ The watch keeps up to **12 apps at a time**; you choose which ones to install. "
 
 If the connection fails: disconnect the watch from the main phone's Bluetooth, force-stop Galaxy Wearable and Samsung Accessory Service, restart the watch, toggle the phone's Bluetooth and tap **Connect** again.
 
-**The Windows Manager's interface is in Portuguese** (the Android apps follow the phone's language). Pages: *Início* (Home: connect), *Loja de apps* (Store: firmware packages by feature, with a guided install wizard), *Apps leves* (Light apps: install, update, remove, tick several), *Jogos e arquivos* (Games and files: Game Boy ROM, saves), *Relógio* (Watch: info, test notification, brightness), *Criar app* (Create app: edit C, compile with one click, install), *Avançado* (Advanced: flash any package you choose). Build it with `python pc/build.py` (add `--test` to run the tests); it needs only Windows, a Bluetooth adapter and, for *Criar app*, the Arm GNU Toolchain.
+**The Windows Manager is bilingual** (English or Portuguese: it follows the Windows display language; use the language button in the side bar, or start it with `--lang en` / `--lang pt`; the Android apps follow the phone's language). The page names below are given in English with the Portuguese name in parentheses. Pages: *Início* (Home: connect), *Loja de apps* (Store: firmware packages by feature, with a guided install wizard), *Apps leves* (Light apps: install, update, remove, tick several), *Jogos e arquivos* (Games and files: Game Boy ROM, saves), *Relógio* (Watch: info, test notification, brightness), *Criar app* (Create app: edit C, compile with one click, install), *Avançado* (Advanced: flash any package you choose). Build it with `python pc/build.py` (add `--test` to run the tests); it needs only Windows, a Bluetooth adapter and, for *Criar app*, the Arm GNU Toolchain.
 
 ### A2. Flash a firmware (Fit3 Manager, Windows or Android)
 

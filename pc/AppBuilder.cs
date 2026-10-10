@@ -50,17 +50,17 @@ namespace Fit3Manager
             Result r = new Result(); StringBuilder log = new StringBuilder(); string tmp = Path.Combine(Path.GetTempPath(), "f3a_" + Guid.NewGuid().ToString("N").Substring(0, 8));
             try
             {
-                if (!ValidId(id)) { r.Log = "O identificador deve ter de 1 a 11 caracteres: letras minúsculas, números, _ ou -."; return r; }
-                if (!File.Exists(Path.Combine(sdk, "f3app.h")) || !File.Exists(Path.Combine(sdk, "app.ld"))) { r.Log = "Não achei a pasta sdk (f3app.h, app.ld) ao lado do programa: " + sdk; return r; }
+                if (!ValidId(id)) { r.Log = Lang.T("O identificador deve ter de 1 a 11 caracteres: letras minúsculas, números, _ ou -."); return r; }
+                if (!File.Exists(Path.Combine(sdk, "f3app.h")) || !File.Exists(Path.Combine(sdk, "app.ld"))) { r.Log = Lang.T("Não achei a pasta sdk (f3app.h, app.ld) ao lado do programa: ") + sdk; return r; }
                 Directory.CreateDirectory(tmp); string obj = Path.Combine(tmp, "app.o"), elf = Path.Combine(tmp, "app.elf"), bn = Path.Combine(tmp, "app.bin"); int code;
                 string o = Run(Tool(bin, "gcc"), "-mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Os -ffreestanding -fno-builtin -fno-tree-loop-distribute-patterns -fno-stack-protector -finput-charset=UTF-8 -fexec-charset=ISO-8859-1 -mword-relocations -fno-pic -fno-exceptions -ffunction-sections -fdata-sections -I " + Q(sdk) + " -c " + Q(src) + " -o " + Q(obj), out code);
-                log.Append(o); if (code != 0) { r.Log = "Erro de compilação:\r\n" + log; return r; }
-                o = Run(Tool(bin, "ld"), "-q --gc-sections -T " + Q(Path.Combine(sdk, "app.ld")) + " -o " + Q(elf) + " " + Q(obj), out code); log.Append(o); if (code != 0) { r.Log = "Erro de ligação:\r\n" + log; return r; }
+                log.Append(o); if (code != 0) { r.Log = Lang.T("Erro de compilação:\r\n") + log; return r; }
+                o = Run(Tool(bin, "ld"), "-q --gc-sections -T " + Q(Path.Combine(sdk, "app.ld")) + " -o " + Q(elf) + " " + Q(obj), out code); log.Append(o); if (code != 0) { r.Log = Lang.T("Erro de ligação:\r\n") + log; return r; }
                 string und = Run(Tool(bin, "nm"), "-u " + Q(elf), out code).Trim();
-                if (und.Length > 0) { r.Log = "O relógio não tem biblioteca C: use só as funções de F3Api e do f3game.h. Símbolos soltos: " + Regex.Replace(und, "\\s+", " "); return r; }
+                if (und.Length > 0) { r.Log = Lang.T("O relógio não tem biblioteca C: use só as funções de F3Api e do f3game.h. Símbolos soltos: ") + Regex.Replace(und, "\\s+", " "); return r; }
                 Dictionary<string, long> syms = new Dictionary<string, long>();
                 foreach (string ln in Run(Tool(bin, "nm"), Q(elf), out code).Split('\n')) { string[] p = ln.Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries); if (p.Length == 3) syms[p[2]] = Convert.ToInt64(p[0], 16); }
-                if (!syms.ContainsKey("f3app_main")) { r.Log = "O app precisa definir F3App *f3app_main(const F3Api *api)."; return r; }
+                if (!syms.ContainsKey("f3app_main")) { r.Log = Lang.T("O app precisa definir F3App *f3app_main(const F3Api *api)."); return r; }
                 long imgEnd = syms["__image_end"], bssEnd = syms["__bss_end"], entry = syms["f3app_main"] & ~1L;
                 Run(Tool(bin, "objcopy"), "-O binary --only-section=.text --only-section=.data " + Q(elf) + " " + Q(bn), out code);
                 byte[] img = File.ReadAllBytes(bn); byte[] full = new byte[imgEnd]; Array.Copy(img, full, Math.Min(img.Length, full.Length)); img = full;
@@ -72,10 +72,10 @@ namespace Fit3Manager
                     uint off = Convert.ToUInt32(m.Groups[1].Value, 16); string typ = m.Groups[2].Value;
                     if (typ == "R_ARM_ABS32" || typ == "R_ARM_TARGET1") relocs.Add(off);
                     else if (typ == "R_ARM_THM_CALL" || typ == "R_ARM_THM_JUMP24" || typ == "R_ARM_THM_JUMP11" || typ == "R_ARM_THM_JUMP8" || typ == "R_ARM_THM_PC8" || typ == "R_ARM_THM_PC12" || typ == "R_ARM_REL32" || typ == "R_ARM_THM_JUMP19" || typ == "R_ARM_V4BX") { }
-                    else { r.Log = "Relocação não suportada " + typ + " em 0x" + off.ToString("x") + " (chame só funções deste arquivo ou de F3Api)."; return r; }
+                    else { r.Log = Lang.T("Relocação não suportada ") + typ + Lang.T(" em 0x") + off.ToString("x") + Lang.T(" (chame só funções deste arquivo ou de F3Api)."); return r; }
                 }
-                foreach (uint rr in relocs) if (rr % 4 != 0 || rr + 4 > img.Length) { r.Log = "Relocação desalinhada ou fora do app em 0x" + rr.ToString("x"); return r; }
-                if (img.Length > 40000) { r.Log = "App grande demais (" + img.Length + " bytes, máx. 40000)."; return r; }
+                foreach (uint rr in relocs) if (rr % 4 != 0 || rr + 4 > img.Length) { r.Log = Lang.T("Relocação desalinhada ou fora do app em 0x") + rr.ToString("x"); return r; }
+                if (img.Length > 40000) { r.Log = Lang.T("App grande demais (") + img.Length + Lang.T(" bytes, máx. 40000)."); return r; }
                 relocs.Sort();
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -85,10 +85,10 @@ namespace Fit3Manager
                     byte[] data = ms.ToArray(); Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(outPath))); File.WriteAllBytes(outPath, data);
                     r.ImageSize = img.Length; r.BssSize = (int)(bssEnd - imgEnd); r.Relocs = relocs.Count; r.FileSize = data.Length;
                 }
-                r.Ok = true; r.Log = (log.ToString().Trim().Length > 0 ? log.ToString().Trim() + "\r\n" : "") + "OK: " + r.FileSize + " bytes (código " + r.ImageSize + ", " + r.Relocs + " relocações).";
+                r.Ok = true; r.Log = (log.ToString().Trim().Length > 0 ? log.ToString().Trim() + "\r\n" : "") + "OK: " + r.FileSize + Lang.T(" bytes (código ") + r.ImageSize + ", " + r.Relocs + Lang.T(" relocações).");
                 return r;
             }
-            catch (Exception e) { r.Log = "Erro: " + e.Message; return r; }
+            catch (Exception e) { r.Log = Lang.T("Erro: ") + e.Message; return r; }
             finally { try { if (Directory.Exists(tmp)) Directory.Delete(tmp, true); } catch (Exception) { } }
         }
     }
