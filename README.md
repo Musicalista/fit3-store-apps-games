@@ -1,8 +1,8 @@
 # Fit3 store: apps and games for the Galaxy Fit3
 
-Small native apps and games ("light apps", `.f3a` files) for the **Samsung Galaxy Fit3 (SM-R390)**, an SDK to write your own, and an Android installer (**Fit3 Apps**) that puts them on the watch over Bluetooth in seconds, without reflashing the firmware.
+Small native apps and games ("light apps", `.f3a` files) for the **Samsung Galaxy Fit3 (SM-R390)**, an SDK to write your own, and tools that put them on the watch over Bluetooth in seconds, without reflashing the firmware: **Fit3 Apps** (Android, apps only) and **Fit3 Manager** (Windows and Android: apps, files, an app creator, and a firmware flasher).
 
-> **Unofficial. Not affiliated with Samsung.** This repository contains **no Samsung firmware** and no firmware images of any kind. Everything here has been tested **on a PC only** (a simulator and a mock watch). **Not yet verified on a real watch:** the Bluetooth transfer from the phone, and whether the watch can execute code loaded into RAM, which every light app depends on. The firmware loader needs a patched firmware; flashing firmware can make a watch unusable, so read the warnings in the firmware project before you flash anything.
+> **Unofficial. Not affiliated with Samsung.** This repository contains **no Samsung firmware** and no firmware images of any kind. The firmware flasher in the Fit3 Manager is a port of the protocol and package checks of [yuriyurin/fit3-flasher](https://github.com/yuriyurin/fit3-flasher): see [NOTICE.md](NOTICE.md). Everything here has been tested **on a PC only** (a simulator and a mock watch). **Not yet verified on a real watch:** the Bluetooth transfer from the phone, and whether the watch can execute code loaded into RAM, which every light app depends on. The firmware loader needs a patched firmware; flashing firmware can make a watch unusable, so read the warnings in the firmware project before you flash anything.
 
 ## What is in here
 
@@ -10,6 +10,8 @@ Small native apps and games ("light apps", `.f3a` files) for the **Samsung Galax
 |---|---|
 | `apps/` | The SDK (`f3app.h`, `f3game.h`, `app.ld`), the compiler script `appcc.py`, **22 apps** in `src/`, prebuilt `dist/*.f3a`, `build_games.py`, and PC test tools |
 | `android/` | **Fit3 Apps**: an Android app (plain Java, no Gradle) that lists the apps, installs, updates and removes them, one or many at a time |
+| `pc/` | **Fit3 Manager for Windows** (C#, builds with the compiler that ships with Windows): connect, install apps, send ROMs and saves, **create apps**, and **flash firmware** |
+| `android-manager/` | **Fit3 Manager for Android**: the same flasher and app installer in one app (a tab for each) |
 | `firmware/` | `appsys.inc.c`: the "Meus apps" loader that runs inside the watch firmware (reference; it builds inside the firmware project, see below) |
 | `docs/` | `APP_FORMAT.md`: the `.f3a` file format and the app API |
 
@@ -35,6 +37,20 @@ Each app is 0.4 to 2.7 KB. The watch keeps up to 12 at a time; you choose which 
 8. **Add your own app:** **+ Add an app from the phone (.f3a)**, then install it like any other.
 
 If the connection fails: disconnect the watch from the main phone's Bluetooth, force-stop Galaxy Wearable and Samsung Accessory Service, restart the watch, toggle the phone's Bluetooth and tap **Connect** again.
+
+**The Windows Manager's interface is in Portuguese** (the Android apps follow the phone's language). Pages: *Início* (Home: connect), *Loja de apps* (Store: firmware packages by feature, with a guided install wizard), *Apps leves* (Light apps: install, update, remove, tick several), *Jogos e arquivos* (Games and files: Game Boy ROM, saves), *Relógio* (Watch: info, test notification, brightness), *Criar app* (Create app: edit C, compile with one click, install), *Avançado* (Advanced: flash any package you choose). Build it with `python pc/build.py` (add `--test` to run the tests); it needs only Windows, a Bluetooth adapter and, for *Criar app*, the Arm GNU Toolchain.
+
+### A2. Flash a firmware (Fit3 Manager, Windows or Android)
+
+**Flashing can make the watch unusable. This repository has no firmware: you bring your own package, and you keep the original (stock) one.** The Manager only sends a package after it has checked all of it (the FWD container, every component and checksum, the target `R390XXU0AZA3`); a damaged or unknown package is never sent.
+
+1. Charge the watch to 50% or more and keep it next to the PC or phone. In *Settings > About > Software information* check that the version is **R390XXU0AZA3**; if it is not, do not flash.
+2. Pair the watch, close Galaxy Wearable and anything else using the watch's Bluetooth, then **Connect** (Android) or **Test connection** (Windows, *Home*). If the watch refuses, see the connection tips in A.
+3. **Windows:** *Firmware (Advanced)* > choose the `.bin`. **Android:** the *Firmware* tab > **Choose .bin file**.
+4. Wait for the check ("verified"). Tick the risk box, then **Transfer to the watch** (three confirmations; optionally a full read-back, which is slower).
+5. Only when the transfer is reported as done, tap **Start installation**. It cannot be cancelled afterwards: do not power the watch off and do not repeat the command. The watch restarts and updates by itself.
+
+To go back to the original firmware, flash the stock package the same way.
 
 ### B. Write your own app
 
@@ -64,6 +80,8 @@ Light apps run as native code on the watch, with no sandbox: only install apps y
 | Apps in the PC simulator, logic tests | Passing |
 | `.f3a` loader (CRC, relocations) against a mock watch | Passing |
 | Transfer protocol against a mock watch | Passing |
-| Real watch: transfer, running apps from RAM, real time and battery | **Not verified** |
+| FWD package validator on real packages (and damaged copies) | Passing |
+| App creator (C#) against `appcc.py` | Byte-identical output |
+| Real watch: transfer, flashing, running apps from RAM, real time and battery | **Not verified** |
 
 Planned: steps, heart rate and notifications in the app API; a PC app creator.

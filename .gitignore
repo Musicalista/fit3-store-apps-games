@@ -14,3 +14,8 @@ out_pc/
 dist/*.apk
 *.ppm
 __pycache__/
+pc/out/
+android-manager/out/
+android-manager/dist/
+android/out/
+android/dist/

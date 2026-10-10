@@ -4,3 +4,5 @@
 *.h text eol=lf
 *.py text eol=lf
 *.java text eol=lf
+*.cs text eol=lf
+*.md text eol=lf
