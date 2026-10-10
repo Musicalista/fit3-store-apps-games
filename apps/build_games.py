@@ -3,6 +3,7 @@ import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import appcc
+import make_icons
 # id, Portuguese name, English name, background RRGGBB, foreground RRGGBB (the launcher tile uses bg for the tile and fg for the letter/text)
 GAMES = [
     ("snake", "Snake", "Snake", "BFEFC4", "1E7A3A"),
@@ -35,5 +36,5 @@ if __name__ == "__main__":
         if want and gid not in want: continue
         out = os.path.join(HERE, "dist", gid + ".f3a")
         n = appcc.build(os.path.join(HERE, "src", gid + ".c"), gid, pt, en, out)
-        open(os.path.join(HERE, "dist", gid + ".meta"), "w", encoding="utf-8").write("%s;%s;%s;%s;%s\n" % (gid, bg, fg, pt, en))
+        open(os.path.join(HERE, "dist", gid + ".meta"), "w", encoding="utf-8").write("%s;%s;%s;%s;%s;%s\n" % (gid, bg, fg, pt, en, make_icons.ICONS.get(gid, "")))
         print("%-8s image %5d B, bss %5d B, relocs %3d, file %5d B" % (gid, n[0], n[1], n[2], n[3]))

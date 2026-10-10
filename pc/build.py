@@ -14,7 +14,7 @@ os.makedirs(OUT, exist_ok=True)
 def src(*names): return [os.path.join(H, n) for n in names]
 def csc(target, out, files):
     args = [CSC, "-nologo", "-codepage:65001", "-target:" + target, "-out:" + out, "-r:System.IO.Compression.dll"]
-    if target == "winexe": args += ["-r:System.Windows.Forms.dll", "-r:System.Drawing.dll"]
+    if target == "winexe": args += ["-r:System.Windows.Forms.dll", "-r:System.Drawing.dll", "-win32icon:" + os.path.join(H, "app.ico")]
     r = subprocess.run(args + files, capture_output=True, text=True)
     if r.returncode: sys.exit(r.stdout + r.stderr)
 

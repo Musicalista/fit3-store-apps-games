@@ -38,6 +38,13 @@ namespace Fit3Manager
             p.Paint += delegate(object s, PaintEventArgs e) { using (Pen pen = new Pen(Line)) e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1); };
             return p;
         }
+        /// <summary>The 32x32 one-bit app icon (256 hex characters, 4 bytes per row, MSB left) as a bitmap: ink pixels in `ink`, the rest in `back`.</summary>
+        public static Bitmap IconBitmap(string hex, Color ink, Color back)
+        {
+            Bitmap b = new Bitmap(32, 32);
+            for (int r = 0; r < 32; r++) for (int c = 0; c < 32; c++) { int by = Convert.ToInt32(hex.Substring((r * 4 + c / 8) * 2, 2), 16); b.SetPixel(c, r, (by & (0x80 >> (c & 7))) != 0 ? ink : back); }
+            return b;
+        }
         public static FlowLayoutPanel Row() { FlowLayoutPanel f = new FlowLayoutPanel(); f.AutoSize = true; f.WrapContents = true; f.Margin = new Padding(0, 6, 0, 0); f.BackColor = Color.Transparent; return f; }
     }
 }

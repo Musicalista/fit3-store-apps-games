@@ -21,7 +21,7 @@ Fit3 store turns the Galaxy Fit3 into a small app-store device: you pick light a
 
 **Functions**
 - **Install, update and remove** apps and games over Bluetooth, one by one or several at once (the watch keeps up to 12).
-- **Browse** the 22 apps with their icons, sizes and install state, and **add your own** `.f3a` files.
+- **Browse** the 22 apps with their icons (also drawn on the watch's "My apps" screen), sizes and install state, and **add your own** `.f3a` files.
 - **Create apps** (Windows): edit C, compile with one click and install, starting from templates or any of the 22 apps.
 - **Flash a firmware package**, with a full integrity check, four explicit confirmations and the way back to the stock firmware.
 - **Send files**: Game Boy ROMs and saves, backup and restore of a save (these need a firmware that has the emulator or the game).
@@ -110,6 +110,7 @@ To go back to the original firmware, flash the stock package the same way.
 1. Install the **Arm GNU Toolchain** (`arm-none-eabi-gcc`, default install folder, or set `ARM_GNU_BIN`) and Python 3.
 2. Copy `apps/src/hello.c` (or a game) to a new file and edit it. Read `apps/f3app.h` for the API and `docs/APP_FORMAT.md` for the file format. No libc: no `printf`, `memcpy` or `malloc`; use the helpers in `apps/f3game.h`.
 3. Compile: `python apps/appcc.py apps/src/myapp.c --id myapp --pt "Meu app" --en "My app" -o apps/dist/myapp.f3a`. The compiler tells you if the app uses something the watch does not have.
+4. Icon (optional): draw a 32x32 one-bit picture in `apps/make_icons.py` (a few lines with `rect`, `disc`, `line`, `poly`...; the preview sheet is `python apps/make_icons.py sheet.ppm`) and add the app to `GAMES` in `build_games.py`. Without one the watch shows the app's initial letter.
 4. Texts: write both languages with `TR("português", "english")` (it picks by the watch language). Source files are UTF-8 and the compiler turns the strings into Latin-1 bytes, which is what the watch's font draws, so accents (é ã ç ô...) work. Name the app in both languages in `build_games.py` (or in the Create app tab).
 5. Test on the PC (below), then rebuild the APK or add the file from the phone (step A.8).
 

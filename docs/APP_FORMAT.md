@@ -21,6 +21,8 @@
 
 An app list lives in `/user/apps/index.txt`, one line per app: `id;BGRRGGBB;FGRRGGBB;Name PT;Name EN` (the colours are RRGGBB, for the launcher tile). The file is `/user/apps/<id>.f3a`. Ids are 1 to 11 characters from `a-z 0-9 _ -`.
 
+**Icon (optional).** A sixth field, `id;BGRRGGBB;FGRRGGBB;Name PT;Name EN;ICON`, holds a 32x32 one-bit picture as 256 hex characters (4 bytes per row, 32 rows, most significant bit on the left). The launcher draws the set bits in the tile's background colour on a square of its foreground colour; without the field it draws the app's initial letter. The icons of the 22 apps are drawn by `apps/make_icons.py` and written into each `apps/dist/<id>.meta`; the installers read the `.meta` and put the line in `index.txt` (the watch reads up to 4600 bytes of it, which fits 12 apps with icons). Names are Latin-1 bytes.
+
 ## The API (`apps/f3app.h`)
 
 The watch calls `f3app_main(api)` once, then `tick(app, pressed, x, y, tap)` about every 33 ms; the app draws the whole frame into `api->fb` (256x402, RGB565) and returns 1 to keep running or 0 to exit. The watch draws its own close button at the top right.

@@ -46,7 +46,7 @@ import java.util.Set;
  */
 public final class MainActivity extends Activity {
     private static final int REQ_FILE = 41;
-    private static final class AppItem { String id, pt, en, bg = "D0DCF8", fg = "3454A8"; byte[] data; boolean builtin; }
+    private static final class AppItem { String id, pt, en, bg = "D0DCF8", fg = "3454A8", ico; byte[] data; boolean builtin; }
 
     private LinearLayout col, listCard, watchCard; private TextView chip, statusTitle, statusDetail, hint; private ProgressBar bar; private Spinner devices;
     private TextView btnConnect, btnRefresh;
@@ -249,7 +249,7 @@ public final class MainActivity extends Activity {
             String[] names = getAssets().list("");
             for (String n : names) if (n.endsWith(".f3a")) {
                 AppItem a = new AppItem(); a.id = n.substring(0, n.length() - 4); a.data = readAll(getAssets().open(n)); a.builtin = true; a.pt = a.id; a.en = a.id;
-                try { String[] p = new String(readAll(getAssets().open(a.id + ".meta")), "UTF-8").trim().split(";"); if (p.length >= 5) { a.bg = p[1]; a.fg = p[2]; a.pt = p[3]; a.en = p[4]; } } catch (Exception ignored) {}
+                try { String[] p = new String(readAll(getAssets().open(a.id + ".meta")), "UTF-8").trim().split(";"); if (p.length >= 5) { a.bg = p[1]; a.fg = p[2]; a.pt = p[3]; a.en = p[4]; if (p.length >= 6 && p[5].trim().matches("[0-9A-Fa-f]{256}")) a.ico = p[5].trim().toUpperCase(); } } catch (Exception ignored) {}
                 if (Store.isF3a(a.data)) catalog.add(a);
             }
         } catch (Exception e) { status("Erro", String.valueOf(e.getMessage()), -1); }
@@ -257,7 +257,7 @@ public final class MainActivity extends Activity {
     private static byte[] readAll(InputStream in) throws java.io.IOException { ByteArrayOutputStream o = new ByteArrayOutputStream(); byte[] b = new byte[8192]; int n; while ((n = in.read(b)) > 0) o.write(b, 0, n); in.close(); return o.toByteArray(); }
     private static String z(byte[] b, int o) { int n = 0; while (n < 16 && b[o + n] != 0) n++; return new String(b, o, n, java.nio.charset.StandardCharsets.US_ASCII); }
     private String name(AppItem a) { return L.pt() ? a.pt : a.en; }
-    private String lineOf(AppItem a) { return a.id + ";" + a.bg + ";" + a.fg + ";" + a.pt + ";" + a.en; }
+    private String lineOf(AppItem a) { return a.id + ";" + a.bg + ";" + a.fg + ";" + a.pt + ";" + a.en + (a.ico != null ? ";" + a.ico : ""); }
     private boolean isInstalled(String id) { for (String s : installed) if (s.startsWith(id + ";")) return true; return false; }
 
     private void askPermissions() {
@@ -290,13 +290,18 @@ public final class MainActivity extends Activity {
             listCard.addView(c, lp(-1, -2, 0, 4, 0, 10));
         }
     }
-    private View iconTile(String bg, String fg, String initial, int size) {
+    private View iconTile(String bg, String fg, String initial, int size, String ico) {
+        if (ico != null && ico.matches("[0-9A-Fa-f]{256}")) {
+            int ink = hex(bg, 0xFFD0DCF8), back = hex(fg, 0xFF3454A8); android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(32, 32, android.graphics.Bitmap.Config.ARGB_8888);
+            for (int r = 0; r < 32; r++) for (int c = 0; c < 32; c++) { int by = Integer.parseInt(ico.substring((r * 4 + c / 8) * 2, (r * 4 + c / 8) * 2 + 2), 16); b.setPixel(c, r, (by & (0x80 >> (c & 7))) != 0 ? ink : back); }
+            android.widget.ImageView iv = new android.widget.ImageView(this); iv.setImageBitmap(android.graphics.Bitmap.createScaledBitmap(b, dp(size), dp(size), false)); iv.setBackground(shape(back, 16)); iv.setLayoutParams(lp(dp(size), dp(size), 0, 0, 12, 0)); return iv;
+        }
         TextView t = label(initial, size / 2, hex(bg, 0xFFD0DCF8), true); t.setGravity(Gravity.CENTER); t.setBackground(shape(hex(fg, 0xFF3454A8), 16)); t.setLayoutParams(lp(dp(size), dp(size), 0, 0, 12, 0)); return t;
     }
     private String initial(String s) { return s.length() > 0 ? s.substring(0, 1).toUpperCase() : "?"; }
     private View appCard(final AppItem a) {
         LinearLayout c = card(null, null); LinearLayout top = new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL);
-        top.addView(iconTile(a.bg, a.fg, initial(name(a)), 56));
+        top.addView(iconTile(a.bg, a.fg, initial(name(a)), 56, a.ico));
         LinearLayout txt = new LinearLayout(this); txt.setOrientation(LinearLayout.VERTICAL); txt.addView(label(name(a), 16, cText, true));
         txt.addView(label(a.data.length + " bytes" + (a.builtin ? "" : "  ·  " + L.t("do celular", "from phone")), 12, cMuted, false));
         boolean inst = isInstalled(a.id); if (installedKnown || inst) txt.addView(label(inst ? "✔ " + L.t("Instalado", "Installed") : L.t("Não instalado", "Not installed"), 12, inst ? cOk : cMuted, true));
@@ -311,7 +316,7 @@ public final class MainActivity extends Activity {
     }
     private View installedRow(final String[] p) {
         LinearLayout row = new LinearLayout(this); row.setGravity(Gravity.CENTER_VERTICAL); row.setPadding(0, dp(6), 0, dp(6));
-        String nm = L.pt() ? p[3] : p[4]; row.addView(iconTile(p[1], p[2], initial(nm), 40));
+        String nm = L.pt() ? p[3] : p[4]; row.addView(iconTile(p[1], p[2], initial(nm), 40, p.length > 5 ? p[5] : null));
         LinearLayout txt = new LinearLayout(this); txt.setOrientation(LinearLayout.VERTICAL); txt.addView(label(nm, 15, cText, true)); txt.addView(label(p[0], 11, cMuted, false)); row.addView(txt, new LinearLayout.LayoutParams(0, -2, 1f));
         TextView rm = button(L.t("Remover", "Remove"), false, new Runnable() { public void run() { confirmRemove(p[0], L.pt() ? p[3] : p[4]); } }); rm.setTextColor(cBad); enable(rm, !busy); row.addView(rm); return row;
     }

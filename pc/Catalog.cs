@@ -56,13 +56,13 @@ namespace Fit3Manager
             new App("store-base-spp", Lang.T("Loja de apps (base) + serial sempre aberto"), K | AP, 26, Lang.T("Launcher 'Meus apps' mais os 2 patches do serial Bluetooth sempre aberto.")),
             new App("max-cs", Lang.T("O máximo: FPS + jogos + Game Boy + utilitários + loja"), K | M | G2 | T | GB | C | AP, 97, Lang.T("Tudo o que cabe com o FPS: minijogos, mais jogos, Game Boy, utilitários, Meus apps e o serial sempre aberto (2 patches). Sem Internet, mundo de blocos e Doom.")),
             new App("max-mc", Lang.T("O máximo: mundo de blocos + jogos + Game Boy + utilitários + loja"), K | M | T | GB | B | AP, 99, Lang.T("Tudo o que cabe com o mundo de blocos: minijogos, Game Boy, utilitários, Meus apps e o serial sempre aberto (2 patches). Sem Internet, FPS, Doom e Mais jogos.")),
-            new App("net-mini", Lang.T("Internet + minijogos + loja (sem Minecraft e CS)"), K | I | M | AP, 93, Lang.T("Internet direta pelo celular (ancoragem Bluetooth), os 4 minijogos, Meus apps e o serial sempre aberto (2 patches).")),
+            new App("net-mini", Lang.T("Internet + minijogos + loja (sem Minecraft e CS)"), K | I | M | AP, 94, Lang.T("Internet direta pelo celular (ancoragem Bluetooth), os 4 minijogos, Meus apps e o serial sempre aberto (2 patches).")),
             new App("net-gb", Lang.T("Internet + Game Boy + loja"), K | I | GB | AP, 97, Lang.T("Internet direta, emulador de Game Boy, Meus apps e o serial sempre aberto (2 patches).")),
             new App("net-tools", Lang.T("Internet + utilitários + loja"), K | I | T | AP, 95, Lang.T("Internet direta, utilitários (calculadora, cronômetro, notas...), Meus apps e o serial sempre aberto (2 patches).")),
             new App("net-games2", Lang.T("Internet + mais jogos + loja"), K | I | G2 | AP, 95, Lang.T("Internet direta, Pong, Velha, Sudoku e Memória, Meus apps e o serial sempre aberto (2 patches).")),
             new App("stock",Lang.T("Original Samsung (restaurar)"), Feat.None, 0, Lang.T("Firmware original AZA3 sem modificações. Use para voltar ao padrão (não apaga seus dados). Arquivo: stock-aza3.bin.")),
         };
-        public sealed class Light { public string Id, Pt, En, Bg, Fg, Path; public long Size; public string IndexLine() { return Id + ";" + Bg + ";" + Fg + ";" + Pt + ";" + En; } }
+        public sealed class Light { public string Id, Pt, En, Bg, Fg, Path, Ico; public long Size; public string IndexLine() { return Id + ";" + Bg + ";" + Fg + ";" + Pt + ";" + En + (Ico != null ? ";" + Ico : ""); } }
         /// <summary>Light apps: *.f3a files with an optional *.meta (id;BGRRGGBB;FGRRGGBB;Nome PT;Name EN) next to each. Looked up in apps\ next to the exe, then in the packages folder.</summary>
         public static List<Light> LoadLight(string pkgFolder)
         {
@@ -75,7 +75,7 @@ namespace Fit3Manager
                     byte[] b = File.ReadAllBytes(f); if (b.Length < 64 || b[0] != 0x46 || b[1] != 0x33 || b[2] != 0x41 || b[3] != 0x31) continue;
                     Light l = new Light(); l.Id = Path.GetFileNameWithoutExtension(f).ToLowerInvariant(); l.Path = f; l.Size = b.Length; l.Bg = "D0DCF8"; l.Fg = "3454A8"; l.Pt = Z(b, 32); l.En = Z(b, 48);
                     string meta = Path.ChangeExtension(f, ".meta");
-                    if (File.Exists(meta)) { string[] p = File.ReadAllText(meta).Trim().Split(';'); if (p.Length >= 5 && p[1].Length == 6 && p[2].Length == 6) { l.Bg = p[1]; l.Fg = p[2]; l.Pt = p[3]; l.En = p[4]; } }
+                    if (File.Exists(meta)) { string[] p = File.ReadAllText(meta).Trim().Split(';'); if (p.Length >= 5 && p[1].Length == 6 && p[2].Length == 6) { l.Bg = p[1]; l.Fg = p[2]; l.Pt = p[3]; l.En = p[4]; if (p.Length >= 6 && System.Text.RegularExpressions.Regex.IsMatch(p[5].Trim(), "^[0-9A-Fa-f]{256}$")) l.Ico = p[5].Trim().ToUpperInvariant(); } }
                     bool dup = false; foreach (Light o in list) if (o.Id == l.Id) dup = true; if (!dup) list.Add(l);
                 }
             }
