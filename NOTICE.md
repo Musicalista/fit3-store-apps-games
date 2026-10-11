@@ -6,6 +6,10 @@ The **firmware flasher** parts of the Fit3 Manager (`pc/Fwd.cs`, `pc/Watch.cs` a
 
 That project did not carry a license when this port was made. It is published here at the repository owner's decision. If you are the author and want the port changed, credited differently or removed, please open an issue and it will be handled promptly.
 
+## Fit3 App (GPL-3.0)
+
+[Fit3 App](https://github.com/yuriyurin/Fit3-App) by yuriyurin is licensed under the GPL-3.0. **No code from it is in this repository**; only protocol facts (the command sequence of the transfer and the BLE `FILE_INFO`/`BT_OPEN` step) that its public source documents. A separate project, `fit3-flasher-app`, is a reduced version of Fit3 App (flasher only) and keeps the GPL-3.0.
+
 ## What is original here
 
 The light-app system (SDK, loader, `.f3a` format, the 22 apps), the Fit3 Apps installer, the app creator and the Manager's user interface are original work.

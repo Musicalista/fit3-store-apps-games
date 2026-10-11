@@ -145,7 +145,7 @@ Clear and reset need two taps within 4 seconds. The screen also repeats the one 
 
 ## Classic Bluetooth pairing
 
-**A user's observation (not tested by me on a watch):** in the companion app (a fork of the original app) the watch only pairs over **classic** Bluetooth **after you connect to the band and set it up**. Before that it does not show up for pairing in the Windows or phone Bluetooth settings.
+**A user's observation (the cause I confirmed in that app's code):** in the unofficial companion app (yuriyurin's [Fit3 App](https://github.com/yuriyurin/Fit3-App), or a fork) the watch only pairs over **classic** Bluetooth **after you connect to the band and set it up**. The reason: before flashing, the app asks the band over Bluetooth Low Energy to prepare the transfer (`FILE_INFO` for a firmware, then `BT_OPEN`); only then does the band open its classic serial service. Before that it does not show up for pairing in the Windows or phone Bluetooth settings.
 
 This matches what the AZA3 firmware shows: the Bluetooth access mode is only "discoverable and connectable" on the setup screen; once set up, the watch only accepts devices it is already paired with.
 
