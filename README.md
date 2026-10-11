@@ -143,6 +143,15 @@ Clear and reset need two taps within 4 seconds. The screen also repeats the one 
 
 **What it cannot do:** rescue a watch that does not boot. A boot loop caused by a bad firmware happens before any of this code runs, and an automatic safe mode would need a hook at the very start of the boot, which cannot be tested safely (a mistake there causes exactly the reboot loop we want to avoid), so it was deliberately not built. The protection against that is the pre-flash checks: only the exact model and version, the full package check, the four confirmations, and keeping the original firmware at hand.
 
+## Classic Bluetooth pairing
+
+**A user's observation (not tested by me on a watch):** in the companion app (a fork of the original app) the watch only pairs over **classic** Bluetooth **after you connect to the band and set it up**. Before that it does not show up for pairing in the Windows or phone Bluetooth settings.
+
+This matches what the AZA3 firmware shows: the Bluetooth access mode is only "discoverable and connectable" on the setup screen; once set up, the watch only accepts devices it is already paired with.
+
+- **Without the always-open serial patch:** pair first through the companion app (connect to the band and set it up), and only then use the Fit3 Manager or Fit3 Apps. If the watch was already set up and the PC or phone cannot see it, redo the pairing through the companion app.
+- **With the patch (the `spp` packages and the `store`, `max` and `net` ones):** the watch stays discoverable and connectable, so you can pair straight from the PC or phone Bluetooth settings without the app. That is what made the serial work outside the setup screen.
+
 ## Usage tips
 
 **First time**
